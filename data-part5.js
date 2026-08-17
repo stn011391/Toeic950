@@ -1,0 +1,41 @@
+const P5CTX=[
+ {dept:'engineering team',doc:'test report',deadline:'Friday',noun:'approval process',item:'prototype',group:'assistants',thing:'information'},
+ {dept:'sales department',doc:'forecast',deadline:'noon',noun:'ordering process',item:'proposal',group:'representatives',thing:'feedback'},
+ {dept:'quality team',doc:'inspection record',deadline:'Monday',noun:'review process',item:'shipment',group:'inspectors',thing:'data'},
+ {dept:'finance division',doc:'expense summary',deadline:'month-end',noun:'payment process',item:'invoice',group:'analysts',thing:'figures'},
+ {dept:'marketing team',doc:'campaign brief',deadline:'Tuesday',noun:'registration process',item:'advertisement',group:'designers',thing:'research'},
+ {dept:'operations group',doc:'maintenance plan',deadline:'tomorrow',noun:'handover process',item:'equipment',group:'technicians',thing:'records'},
+ {dept:'legal department',doc:'contract draft',deadline:'Thursday',noun:'compliance process',item:'agreement',group:'attorneys',thing:'evidence'},
+ {dept:'HR team',doc:'training schedule',deadline:'next week',noun:'onboarding process',item:'workshop',group:'coordinators',thing:'applications'}
+];
+const P5PAT=[
+ [720,'The {dept} must submit the {doc} _____ {deadline}.',['by','among','during','beside'],0,'by + 時間點表示截止期限。','介系詞'],
+ [720,'The {dept} _____ promptly to the customer’s request.',['respond','response','responded','responsive'],2,'句子需要過去式動詞 responded。','詞性'],
+ [720,'The new software made the {noun} more _____.',['efficiency','efficient','efficiently','efficiencies'],1,'make + O + 形容詞補語。','詞性'],
+ [720,'Please contact the {dept} _____ you have any questions.',['if','unless','despite','because of'],0,'if 引導條件子句。','連接詞'],
+ [800,'The {item} will be released _____ the final review is completed.',['once','despite','during','because of'],0,'once + 子句表示「一旦」。','連接詞'],
+ [800,'_____ the short notice, the {dept} completed the {doc} on time.',['Despite','Because','Although','Unless'],0,'Despite 後接名詞片語。','介系詞/連接詞'],
+ [800,'The manager asked that the {doc} _____ before the meeting.',['revise','be revised','revised','revising'],1,'ask that + 主詞 + 原形；被動用 be revised。','假設語氣'],
+ [800,'Employees are encouraged _____ questions during the workshop.',['ask','to ask','asking','asked'],1,'encourage someone to do；被動後接 to V。','不定詞'],
+ [800,'The {thing} collected during the survey _____ confidential.',['remain','remains','remaining','to remain'],1,'主詞視為整體資訊，動詞用 remains。','主謂一致'],
+ [800,'Neither the manager nor the {group} _____ available this morning.',['was','were','be','been'],1,'Neither A nor B 動詞通常就近與複數 B 一致。','主謂一致'],
+ [800,'The contract will be renewed _____ both parties agree to the revised terms.',['provided that','in spite of','so that','due to'],0,'provided that = 只要／如果。','連接詞'],
+ [800,'The report contains {thing} _____ from more than 200 respondents.',['collect','collected','collecting','collection'],1,'名詞與 collect 為被動關係，用過去分詞。','分詞'],
+ [900,'_____ the supplier confirm the new date, we will revise the production plan.',['Should','Would','Could','Might'],0,'Should + 主詞 + 原形 = If 主詞 should... 的倒裝。','倒裝'],
+ [900,'Only after the audit was completed _____ the discrepancy.',['we discovered','did we discover','we had discovered','discovered we'],1,'Only + 副詞片語置首需部分倒裝。','倒裝'],
+ [900,'The proposal, _____ by both finance and legal, will go to the board tomorrow.',['review','reviewed','reviewing','reviews'],1,'省略關係子句，proposal 與 review 為被動。','分詞構句'],
+ [900,'_____ candidate is selected will need to begin within two weeks.',['Whoever','Whomever','Whatever','However'],0,'空格作子句主詞，指人用 Whoever。','複合關係詞'],
+ [900,'The updated procedure is intended to reduce delays _____ maintaining the same safety standard.',['while','because of','unless','despite of'],0,'while + V-ing 表示同時／對比。','連接詞'],
+ [900,'Had the {doc} arrived earlier, the {dept} _____ the review yesterday.',['could complete','could have completed','completes','had completed'],1,'Had... = If...had，主句用 could have p.p.。','假設語氣'],
+ [900,'The warranty remains valid _____ the equipment is serviced by an authorized provider.',['as long as','even though','rather than','in addition to'],0,'as long as = 只要。','連接詞'],
+ [900,'Not only _____ the error, but it also prevented a repeat occurrence.',['the update corrected','did the update correct','the update did correct','corrected the update'],1,'Not only 置首需倒裝。','倒裝'],
+ [950,'Scarcely _____ the revised schedule when the client requested another change.',['we issued','had we issued','we had issued','did we issue'],1,'Scarcely had + 主詞 + p.p. + when...。','高階倒裝'],
+ [950,'_____ for the unexpected customs inspection, the {item} would have arrived on Monday.',['Had it not been','If it were not','Were it not','Should it not be'],0,'與過去事實相反：Had it not been for...。','假設語氣'],
+ [950,'The board approved the investment, _____ several members had raised concerns about short-term cash flow.',['notwithstanding that','provided that','so that','as long as'],0,'notwithstanding that = 儘管。','高階連接詞'],
+ [950,'With the final specifications _____, the {dept} can now request firm quotations.',['confirm','confirmed','confirming','to confirm'],1,'with + O + p.p. 表示受詞被完成。','with構句'],
+ [950,'Little _____ that the seemingly minor defect would trigger a full product recall.',['the team expected','did the team expect','the team had expected','had the team expecting'],1,'Little 置首需部分倒裝。','高階倒裝'],
+ [950,'The change is unlikely to affect output, _____ an extended shutdown becomes necessary.',['unless','whereas','insofar as','notwithstanding'],0,'unless = 除非，符合條件語意。','語意連接'],
+ [950,'The recommendation was phrased carefully lest it _____ as a mandatory instruction.',['be interpreted','is interpreted','was interpreted','interprets'],0,'lest 後常用原形；被動為 be interpreted。','高階假設'],
+ [950,'No sooner _____ the new policy than several departments requested clarification.',['was announced','had the company announced','the company announced','did the company announce'],1,'No sooner had + 主詞 + p.p. + than...。','高階倒裝']
+];
+P5PAT.forEach(([d,stem,opts,a,why,cause])=>P5CTX.forEach(c=>addQ(5,d,fill(stem,c),opts,a,why,cause)));
