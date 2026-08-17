@@ -1,31 +1,49 @@
 # TOEIC 950 Mission Control
 
-**Current version: v1.0.0 — Extreme No-Scroll Edition**
+Current release: **v1.1.0 — 950 Training Engine**
 
-A browser-based TOEIC training site designed to move from 720 toward 950 through weakness diagnosis, Part 2–7 drills, timed practice, error review, vocabulary, and progress tracking.
+A browser-based TOEIC training system designed to move from a 720 baseline toward a 950 target through timed practice, diagnostic data, weak-part tracking, error review and adaptive difficulty.
 
-## v1.0.0 highlights
+## v1.1.0 highlights
 
-- 720 → 950 staged roadmap
-- 14-question weakness diagnosis
-- Part 2–7 targeted practice
-- Timed training with accuracy tracking
-- Listening playback using browser speech synthesis
-- Automatic error notebook and error-cause classification
-- TOEIC business vocabulary practice
-- Daily 30 / 60 / 90 minute training plans
-- Local progress persistence via `localStorage`
-- Extreme no-scroll focus mode for diagnostic and practice screens
-- Desktop two-column answer layout with responsive mobile fallback
+- **532 original practice questions** across Parts 2–7.
+- Difficulty layers: **720 / 800 / 900 / 950**.
+- Part 5 includes advanced inversion, subjunctive structures, participle clauses and high-level connectors.
+- Part 7 includes **single, double and triple-document** sets with inference and cross-document reasoning.
+- **Training mode:** immediate answer, explanation and listening transcript.
+- **Exam mode:** no immediate answer; answers and explanations appear after the round.
+- Answer choices are shuffled every session while preserving the correct answer mapping.
+- Keyboard controls: **A–D / 1–4**, **Enter**, **Space**.
+- Part 2 hides response text before answering and plays the question plus A/B/C responses by audio.
+- Listening in exam/diagnostic mode is limited to one play per audio set.
+- Part 7 uses a left-document / right-question desktop layout.
+- Diagnostic 2.0 uses 36 stratified questions and does not invent a weak part when scores are uniformly strong.
+- Daily missions are based on **actual answered questions / reviewed errors / vocabulary activity**, not manual checkboxes.
+- Browser progress is stored locally with `localStorage`.
+- GitHub Actions validates JavaScript, question-bank integrity and UI contracts before Pages deployment.
 
-## Run
+## Files
 
-Open `index.html` locally, or enable GitHub Pages from the `main` branch.
+- `index.html` — application shell and sections
+- `styles.css` — responsive / focus-mode / split-reading UI
+- `data-core.js`, `data-listening.js`, `data-part5.js`, `data-part6.js`, `data-part7.js` — modular original question bank
+- `data.js` — question-bank finalizer / count
+- `app-core.js`, `app-diagnostic.js`, `app-practice.js`, `app-learning.js` — training engine modules
+- `app.js` — keyboard controls and application bootstrap
+- `tests/` — zero-dependency Node smoke tests
+- `VERSION` — current semantic version
+- `CHANGELOG.md` — release history
 
 ## Versioning
 
-This project uses semantic versioning:
+Semantic versioning is used:
 
-- Patch: `v1.0.1` — bug fixes / small UI adjustments
-- Minor: `v1.1.0` — new training features or question sets
-- Major: `v2.0.0` — major architecture or learning-system redesign
+- `v1.1.x`: fixes and small refinements to the 950 Training Engine
+- `v1.x.0`: meaningful new training capabilities
+- `v2.0.0`: major architecture / learning-system redesign
+
+The `v1.0.0` and `v1.1.0` branches are release snapshots. Active development continues on `main`.
+
+## Notes
+
+All practice questions in this repository are original training material and are **not official ETS TOEIC questions**. Browser speech synthesis is used for listening drills, so voice quality depends on the operating system and browser.
