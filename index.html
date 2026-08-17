@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TOEIC 950 Mission Control</title>
-<meta name="description" content="從 TOEIC 720 挑戰 950：診斷、每日任務、七大 Part 訓練、錯題本與進度追蹤。" />
+<title>TOEIC 950 Mission Control v1.1.0</title>
+<meta name="description" content="TOEIC 720 挑戰 950：自適應診斷、訓練/模考雙模式、500+ 題題庫、錯題本與進度追蹤。" />
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
 <aside class="side">
-  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950 · v1.0.0</small></div></div>
+  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.1.0 · 950 Training Engine</span></div></div>
   <nav>
     <button class="active" data-go="home">🏠 今日任務</button>
     <button data-go="diagnostic">🎯 弱點診斷</button>
@@ -43,10 +43,10 @@
   </section>
 
   <section class="section" id="diagnostic">
-    <div class="title-row"><h2>🎯 弱點診斷</h2><span>緊湊版畫面，盡量減少滾動</span></div>
+    <div class="title-row"><h2>🎯 弱點診斷 2.0</h2><span>36 題分層診斷，不硬判弱點</span></div>
     <div class="exam-toolbar">
-      <div class="panel"><div class="compact-actions"><div class="metric"><strong id="diagDone">0 / 14</strong><small>已完成</small></div><div class="metric"><strong id="diagAcc">—</strong><small>正確率</small></div><button class="btn btn-primary" onclick="startDiagnostic()">開始 / 繼續診斷</button></div><div class="divider"></div><p id="diagAdvice">完成 14 題後，系統會告訴你目前最該補的 Part。</p></div>
-      <div class="panel"><h3>診斷目的</h3><p>找出你最常掉分的環節：聽力反應速度、Part 5 文法、Part 6 上下文，或 Part 7 閱讀速度。</p><div class="callout">真正有效的資料，不是一次診斷，而是之後每次答錯時留下的錯因紀錄。</div></div>
+      <div class="panel"><div class="compact-actions"><div class="metric"><strong id="diagDone">0 / 36</strong><small>已完成</small></div><div class="metric"><strong id="diagAcc">—</strong><small>正確率</small></div><button class="btn btn-primary" onclick="startDiagnostic()">開始 / 繼續診斷</button><button class="btn btn-soft" onclick="resetDiag()">重新診斷</button></div><div class="divider"></div><p id="diagAdvice">每個 Part 至少取 6 題；如果沒有明顯弱項，系統會直接告訴你「目前無明顯弱點」。</p></div>
+      <div class="panel"><h3>診斷規則</h3><div id="diagBreakdown" class="weak-table"></div><p class="hint">診斷只涵蓋 Part 2–7；Part 1 會在後續影像題庫版本加入。</p></div>
     </div>
     <div class="panel qbox hidden" id="diagBox" style="margin-top:12px"></div>
   </section>
@@ -57,12 +57,21 @@
   </section>
 
   <section class="section" id="practice">
-    <div class="title-row"><h2>⚡ 限時訓練</h2><span>桌機優化：盡量一屏內完成答題</span></div>
+    <div class="title-row"><h2>⚡ 950 Training Engine</h2><span>訓練 / 模考雙模式＋鍵盤作答</span></div>
     <div class="exam-toolbar">
-      <div class="panel"><div class="compact-actions"><div class="field"><label>選擇 Part</label><select id="practicePart" onchange="resetPractice()"><option value="5">Part 5 文法/單字</option><option value="6">Part 6 篇章填空</option><option value="7">Part 7 閱讀</option><option value="2">Part 2 應答</option><option value="3">Part 3 對話</option><option value="4">Part 4 短講</option></select></div><div class="field"><label>題數</label><select id="practiceCount"><option>5</option><option selected>10</option><option>15</option></select></div><button class="btn btn-primary" onclick="startPractice()">開始訓練</button><button class="btn btn-soft" onclick="resetPractice()">重置</button></div><p class="hint">Listening 題使用瀏覽器英文語音播放；切到下一題時會自動回到題目頂部。</p></div>
-      <div class="panel"><div class="metrics-compact"><div class="metric"><strong id="pracScore">0 / 0</strong><small>答對</small></div><div class="metric"><strong id="pracAcc">—</strong><small>正確率</small></div><div class="metric"><strong class="timer" id="pracTimer">00:00</strong><small>本輪時間</small></div></div><p id="pracMessage">高分訓練要同時追蹤「準確率」與「速度」。</p></div>
+      <div class="panel">
+        <div class="practice-controls">
+          <div class="field"><label>模式</label><select id="practiceMode" onchange="resetPractice()"><option value="training">訓練模式</option><option value="exam">模考模式</option></select></div>
+          <div class="field"><label>難度</label><select id="practiceDifficulty" onchange="resetPractice()"><option value="adaptive">自適應</option><option value="720">720–800</option><option value="800">800–900</option><option value="900">900+</option><option value="950">950 挑戰</option></select></div>
+          <div class="field"><label>Part</label><select id="practicePart" onchange="resetPractice()"><option value="5">Part 5 文法/單字</option><option value="6">Part 6 篇章填空</option><option value="7">Part 7 閱讀</option><option value="2">Part 2 應答</option><option value="3">Part 3 對話</option><option value="4">Part 4 短講</option></select></div>
+          <div class="field"><label>題數</label><select id="practiceCount"><option>5</option><option selected>10</option><option>20</option><option>30</option></select></div>
+          <button class="btn btn-primary" onclick="startPractice()">開始訓練</button><button class="btn btn-soft" onclick="resetPractice()">重置</button>
+        </div>
+        <div class="kbd-hint"><span class="kbd">A–D</span> 作答　<span class="kbd">Enter</span> 下一題　<span class="kbd">Space</span> 播放 Listening</div>
+      </div>
+      <div class="panel"><div class="metrics-compact"><div class="metric"><strong id="pracScore">0 / 0</strong><small>答對</small></div><div class="metric"><strong id="pracAcc">—</strong><small>正確率</small></div><div class="metric"><strong class="timer" id="pracTimer">00:00</strong><small>本輪時間</small></div></div><p id="pracMessage">訓練模式立即解析；模考模式完成整輪後才公布答案。</p></div>
     </div>
-    <div class="panel qbox hidden" id="practiceBox" style="margin-top:12px"></div>
+    <div class="panel qbox hidden" id="practiceBox" style="margin-top:10px"></div>
   </section>
 
   <section class="section" id="vocab">
@@ -86,7 +95,17 @@
   </section>
 </main>
 </div>
+
+<script src="data-core.js"></script>
+<script src="data-listening.js"></script>
+<script src="data-part5.js"></script>
+<script src="data-part6.js"></script>
+<script src="data-part7.js"></script>
 <script src="data.js"></script>
+<script src="app-core.js"></script>
+<script src="app-diagnostic.js"></script>
+<script src="app-practice.js"></script>
+<script src="app-learning.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
