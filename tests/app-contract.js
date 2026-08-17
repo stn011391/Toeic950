@@ -1,0 +1,5 @@
+const fs=require('fs');const html=fs.readFileSync('index.html','utf8');const app=['app-core.js','app-diagnostic.js','app-practice.js','app-learning.js','app.js'].map(f=>fs.readFileSync(f,'utf8')).join('\n');
+function assert(c,m){if(!c){console.error('FAIL:',m);process.exit(1)}}
+for(const id of ['taskList','diagBox','diagBreakdown','practiceMode','practiceDifficulty','practicePart','practiceCount','practiceBox','pracScore','pracAcc','pracTimer','errorList','vocabCard','weekChart'])assert(html.includes(`id="${id}"`),`missing #${id}`);
+for(const fn of ['prepareQuestion','startDiagnostic','startPractice','playPracticeAudio','answerPractice','renderTasks'])assert(app.includes(`function ${fn}`),`missing function ${fn}`);
+assert(app.includes("e.code==='Space'"),'missing Space shortcut');assert(app.includes("e.key==='Enter'"),'missing Enter shortcut');assert(html.includes('v1.1.0'),'version not visible');assert(html.includes('data-part7.js'),'modular question bank not loaded');console.log('PASS app-contract');
