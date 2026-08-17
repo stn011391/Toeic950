@@ -1,10 +1,30 @@
 # Changelog
 
-## v1.0.0 — 2026-08-17
+## v1.1.0 — 950 Training Engine — 2026-08-17
 
 ### Added
-- Initial standalone TOEIC 950 Mission Control release.
-- Weakness diagnosis, Part 2–7 practice, timed drills, error notebook, vocabulary, and progress tracking.
-- Extreme No-Scroll focus mode for diagnostic and practice views.
-- Responsive layout for desktop and mobile.
-- Version files and GitHub Pages workflow.
+- Expanded Parts 2–7 to **532 original questions**.
+- Four difficulty layers: 720 / 800 / 900 / 950.
+- High-difficulty Part 5 grammar and collocation pool.
+- Double- and triple-document Part 7 sets.
+- Training mode and exam mode.
+- Per-session answer-choice randomization with correct-answer remapping.
+- Keyboard answering: A–D / 1–4, Enter for next, Space for Listening.
+- Part 2 audio-only response choices before answering.
+- One-play Listening behavior in exam and diagnostic modes.
+- Part 7 split reading layout.
+- 36-question Diagnostic 2.0 with no forced weak-part result.
+- Automatic daily mission progress based on real study activity.
+- Per-Part accuracy and pace tracking.
+- GitHub Actions smoke tests before Pages deployment.
+
+### Changed
+- Focus mode remains optimized for minimal page scrolling.
+- Error log now records selected answer, correct answer, cause and difficulty.
+- Streak is based on actual activity instead of merely opening the site.
+- Adaptive practice difficulty follows the learner’s current score and performance data.
+
+## v1.0.0 — Extreme No-Scroll Edition — 2026-08-17
+- Initial TOEIC 950 Mission Control release.
+- Compact desktop answer layout and focus mode.
+- Parts 2–7 practice, diagnostic, vocabulary, error log and progress tracking.
