@@ -1,0 +1,17 @@
+const APP_VERSION='v1.1.0';
+const PARTS=[
+ {n:1,name:'Photographs',zh:'照片描述',focus:'快速掃描人物、動作、位置',tips:['先看主體與動作','注意被動語態與位置介系詞','不要因單字相同就選']},
+ {n:2,name:'Question–Response',zh:'應答問題',focus:'第一個疑問詞 + 語意反應',tips:['Who/When/Where 開頭立刻分類','防同音字干擾','間接回答很常見']},
+ {n:3,name:'Conversations',zh:'多人對話',focus:'人物關係、目的、下一步',tips:['播音前先掃題目','抓轉折與下一步','熟悉同義改寫']},
+ {n:4,name:'Talks',zh:'短講',focus:'主旨、細節、公告目的',tips:['辨識場景','記錄時間地點與動作','不要卡在單一陌生字']},
+ {n:5,name:'Incomplete Sentences',zh:'單句填空',focus:'詞性、文法、搭配、速度',tips:['先判斷考詞性還是語意','文法題力求快速完成','建立固定搭配詞庫']},
+ {n:6,name:'Text Completion',zh:'篇章填空',focus:'上下文、代名詞、句子插入',tips:['不要只看空格前後','留意時態與指涉','句子插入看邏輯連接']},
+ {n:7,name:'Reading Comprehension',zh:'閱讀理解',focus:'定位、同義改寫、時間管理',tips:['題目先抓關鍵字','答案常是改寫不是原字','雙/三篇先確認文件關係']}
+];
+const VWORDS=[
+ ['allocate','v.','分配','allocate resources / allocate a budget'],['mandatory','adj.','強制的','mandatory training / requirement'],['tentative','adj.','暫定的','tentative schedule / date'],['reimbursement','n.','報銷','travel reimbursement'],['eligible','adj.','符合資格的','eligible for'],['adjacent','adj.','鄰近的','adjacent to'],['facilitate','v.','促進','facilitate communication'],['substantial','adj.','大量的','substantial increase'],['compliance','n.','合規','in compliance with'],['retain','v.','保留','retain records'],['promptly','adv.','迅速地','respond promptly'],['premises','n.','營業場所','on the premises'],['initiative','n.','倡議','launch an initiative'],['accommodate','v.','容納／配合','accommodate a request'],['approximately','adv.','大約','approximately 20 minutes'],['proceed','v.','繼續進行','proceed with'],['defective','adj.','有缺陷的','defective component'],['consistently','adv.','持續一致地','perform consistently'],['substitute','n./v.','替代','substitute for'],['outstanding','adj.','未完成的／傑出的','outstanding balance'],['contingent','adj.','取決於','contingent upon'],['notwithstanding','prep./adv.','儘管','notwithstanding the delay'],['feasible','adj.','可行的','commercially feasible'],['subsequent','adj.','後續的','subsequent review'],['consecutive','adj.','連續的','three consecutive quarters'],['comply','v.','遵循','comply with regulations'],['discrepancy','n.','差異／不一致','resolve a discrepancy'],['waive','v.','免除','waive a fee'],['incur','v.','產生費用','incur additional costs'],['rectify','v.','改正','rectify an error'],['deteriorate','v.','惡化','conditions deteriorated'],['consolidate','v.','整合','consolidate shipments'],['defer','v.','延後','defer a decision'],['unanimous','adj.','一致同意的','unanimous approval'],['inadvertently','adv.','無意間','inadvertently omitted'],['provisional','adj.','臨時的','provisional schedule'],['commence','v.','開始','commence operations'],['terminate','v.','終止','terminate a contract'],['procurement','n.','採購','procurement process'],['mitigate','v.','降低／緩解','mitigate risk']
+];
+const VOCAB=VWORDS.map(([w,pos,zh,col])=>({w,pos,zh,col,ex:`Review the phrase “${col}” and use ${w} in a business sentence.`,exzh:`記憶 ${w} 時，請連同搭配詞一起學習。`}));
+const QUESTIONS={2:[],3:[],4:[],5:[],6:[],7:[]};
+const fill=(s,m)=>s.replace(/\{(\w+)\}/g,(_,k)=>m[k]??`{${k}}`);
+function addQ(part,difficulty,prompt,opts,a,why,cause,extra={}){const id=`P${part}-${String(QUESTIONS[part].length+1).padStart(3,'0')}`;QUESTIONS[part].push({id,part,difficulty,prompt,opts,a,why,cause,...extra})}
