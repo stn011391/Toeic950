@@ -1,4 +1,4 @@
-name: Deploy TOEIC950 to GitHub Pages
+name: Validate and Deploy TOEIC950
 
 on:
   push:
@@ -15,18 +15,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          for f in data*.js app*.js; do node --check "$f"; done
+      - name: Data smoke test
+        run: node tests/data-smoke.js
+      - name: UI contract test
+        run: node tests/app-contract.js
+
   deploy:
+    needs: validate
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
