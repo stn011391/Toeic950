@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TOEIC 950 Mission Control</title>
+<meta name="description" content="從 TOEIC 720 挑戰 950：診斷、每日任務、七大 Part 訓練、錯題本與進度追蹤。" />
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small></div></div>
+  <nav>
+    <button class="active" data-go="home">🏠 今日任務</button>
+    <button data-go="diagnostic">🎯 弱點診斷</button>
+    <button data-go="parts">🧩 7 Parts 戰術</button>
+    <button data-go="practice">⚡ 限時訓練</button>
+    <button data-go="vocab">🧠 950 單字庫</button>
+    <button data-go="errors">📕 錯題本</button>
+    <button data-go="progress">📈 進度追蹤</button>
+  </nav>
+  <div class="side-card"><b>核心原則</b><p>950 的關鍵不是做更多題，而是把「會錯的題型」變成固定得分。每天記錄錯因，下一次看到同類題要更快、更準。</p></div>
+</aside>
+<main>
+  <header class="top"><div><h1 id="topTitle">Good afternoon, Steven.</h1><p>今天不是「學英文」，而是在縮短 720 → 950 的分數差距。</p></div><div class="badge"><strong id="streak">1 天</strong><small>連續訓練</small></div></header>
+
+  <section class="section active" id="home">
+    <div class="hero">
+      <div><h2>TOEIC 950<br/>Project</h2><p>你已經有 720 分的底子。現在把訓練從「廣泛學習」切換成「考點辨識、速度、精準度、錯題消滅」。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button></div></div>
+      <div class="hero-stats"><div class="hero-stat"><strong id="heroCurrent">720</strong><small>目前分數</small></div><div class="hero-stat"><strong>950</strong><small>目標分數</small></div><div class="hero-stat"><strong id="gapScore">230</strong><small>尚需提升</small></div></div>
+    </div>
+
+    <div class="title-row"><h2>你的升級路線</h2><span>不是保證分數；用階段目標控制訓練難度</span></div>
+    <div class="panel"><div class="score-ladder"><div class="step current"><strong>720</strong><small>現在</small></div><div class="step"><strong>800</strong><small>穩定基礎</small></div><div class="step"><strong>850</strong><small>速度提升</small></div><div class="step"><strong>900</strong><small>高精準</small></div><div class="step"><strong>950</strong><small>目標</small></div></div><div style="margin-top:15px" class="progress"><div id="goalProgress" style="width:0%"></div></div></div>
+
+    <div class="title-row"><h2>今日 60 分鐘任務</h2><span>可在設定中切換 30 / 60 / 90 分鐘</span></div>
+    <div class="grid g2">
+      <div class="panel"><div class="form-row"><div class="field"><label>每日時間</label><select id="dailyMinutes" onchange="saveSettings();renderTasks()"><option value="30">30 分鐘</option><option value="60" selected>60 分鐘</option><option value="90">90 分鐘</option></select></div><div class="field"><label>目前總分</label><input id="currentScore" type="number" min="10" max="990" step="5" value="720" onchange="saveSettings();updateScoreUI()" /></div><div class="field"><label>Listening（可選）</label><input id="listenScore" type="number" min="5" max="495" step="5" placeholder="例如 380" onchange="saveSettings()" /></div><div class="field"><label>Reading（可選）</label><input id="readScore" type="number" min="5" max="495" step="5" placeholder="例如 340" onchange="saveSettings()" /></div></div><p class="hint">若你知道最近一次 L/R 分數，填入後我會用於訓練建議；不知道也沒關係，先做弱點診斷。</p></div>
+      <div class="panel"><div class="metric"><strong id="todayPct">0%</strong><small>今日完成率</small></div><div class="progress" style="margin-top:12px"><div id="todayBar" style="width:0%"></div></div><p id="dailyAdvice">先完成弱點診斷，再開始每日任務。</p></div>
+    </div>
+    <div class="panel" style="margin-top:16px"><div id="taskList"></div></div>
+  </section>
+
+  <section class="section" id="diagnostic">
+    <div class="title-row"><h2>🎯 弱點診斷</h2><span>緊湊版畫面，盡量減少滾動</span></div>
+    <div class="exam-toolbar">
+      <div class="panel"><div class="compact-actions"><div class="metric"><strong id="diagDone">0 / 14</strong><small>已完成</small></div><div class="metric"><strong id="diagAcc">—</strong><small>正確率</small></div><button class="btn btn-primary" onclick="startDiagnostic()">開始 / 繼續診斷</button></div><div class="divider"></div><p id="diagAdvice">完成 14 題後，系統會告訴你目前最該補的 Part。</p></div>
+      <div class="panel"><h3>診斷目的</h3><p>找出你最常掉分的環節：聽力反應速度、Part 5 文法、Part 6 上下文，或 Part 7 閱讀速度。</p><div class="callout">真正有效的資料，不是一次診斷，而是之後每次答錯時留下的錯因紀錄。</div></div>
+    </div>
+    <div class="panel qbox hidden" id="diagBox" style="margin-top:12px"></div>
+  </section>
+
+  <section class="section" id="parts">
+    <div class="title-row"><h2>🧩 7 Parts 得分戰術</h2><span>把每一 Part 都變成可訓練技能</span></div>
+    <div class="grid g3" id="partCards"></div>
+  </section>
+
+  <section class="section" id="practice">
+    <div class="title-row"><h2>⚡ 限時訓練</h2><span>桌機優化：盡量一屏內完成答題</span></div>
+    <div class="exam-toolbar">
+      <div class="panel"><div class="compact-actions"><div class="field"><label>選擇 Part</label><select id="practicePart" onchange="resetPractice()"><option value="5">Part 5 文法/單字</option><option value="6">Part 6 篇章填空</option><option value="7">Part 7 閱讀</option><option value="2">Part 2 應答</option><option value="3">Part 3 對話</option><option value="4">Part 4 短講</option></select></div><div class="field"><label>題數</label><select id="practiceCount"><option>5</option><option selected>10</option><option>15</option></select></div><button class="btn btn-primary" onclick="startPractice()">開始訓練</button><button class="btn btn-soft" onclick="resetPractice()">重置</button></div><p class="hint">Listening 題使用瀏覽器英文語音播放；切到下一題時會自動回到題目頂部。</p></div>
+      <div class="panel"><div class="metrics-compact"><div class="metric"><strong id="pracScore">0 / 0</strong><small>答對</small></div><div class="metric"><strong id="pracAcc">—</strong><small>正確率</small></div><div class="metric"><strong class="timer" id="pracTimer">00:00</strong><small>本輪時間</small></div></div><p id="pracMessage">高分訓練要同時追蹤「準確率」與「速度」。</p></div>
+    </div>
+    <div class="panel qbox hidden" id="practiceBox" style="margin-top:12px"></div>
+  </section>
+
+  <section class="section" id="vocab">
+    <div class="title-row"><h2>🧠 950 單字庫</h2><span>商務情境 + 常見搭配詞</span></div>
+    <div class="grid g2">
+      <div class="panel" id="vocabCard"></div>
+      <div class="panel"><h3>記憶方式</h3><p>高分不是只知道中文意思，而是看到字時能立刻知道詞性、搭配與句中功能。</p><div class="actions"><button class="btn btn-soft" onclick="prevVocab()">上一個</button><button class="btn btn-primary" onclick="speakVocab()">🔊 發音</button><button class="btn btn-green" onclick="gradeVocab(1)">熟悉</button><button class="btn btn-red" onclick="gradeVocab(0)">不熟</button><button class="btn btn-soft" onclick="nextVocab()">下一個</button></div><div class="divider"></div><div class="metric"><strong id="vocabMastered">0</strong><small>已標記熟悉</small></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="errors">
+    <div class="title-row"><h2>📕 錯題本</h2><span>950 的核心功能：不要錯第二次</span></div>
+    <div class="grid g2"><div class="panel"><div class="grid g3"><div class="metric"><strong id="errorCount">0</strong><small>累積錯題</small></div><div class="metric"><strong id="topWeak">—</strong><small>最多錯 Part</small></div><div class="metric"><strong id="reviewedCount">0</strong><small>已複習</small></div></div></div><div class="panel"><h3>錯因分類</h3><p>每題錯誤應歸因為：單字、文法、沒聽到關鍵字、同義改寫、推論錯誤、閱讀太慢或粗心。</p><button class="btn btn-red" onclick="clearErrors()">清空錯題紀錄</button></div></div>
+    <div class="panel" id="errorList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="section" id="progress">
+    <div class="title-row"><h2>📈 進度追蹤</h2><span>看趨勢，不看單日情緒</span></div>
+    <div class="grid g4"><div class="metric"><strong id="pDays">0</strong><small>訓練天數</small></div><div class="metric"><strong id="pQuestions">0</strong><small>累積練習題</small></div><div class="metric"><strong id="pAccuracy">—</strong><small>累積正確率</small></div><div class="metric"><strong id="pVocab">0</strong><small>熟悉單字</small></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="panel"><h3>最近 7 天完成率</h3><div class="bar-chart" id="weekChart"></div></div><div class="panel"><h3>下一步建議</h3><p id="progressAdvice"></p><div class="callout">當練習正確率穩定 ≥ 90%，下一階段必須增加「限時」壓力；否則只是在做會做的題。</div></div></div>
+  </section>
+</main>
+</div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
