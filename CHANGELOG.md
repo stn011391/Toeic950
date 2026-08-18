@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.2.0 — Guest Backup — 2026-08-18
+
+### Added
+- Dedicated Guest Mode / Backup page for the public login-free website.
+- One-click JSON export of local study progress.
+- JSON import with preview before replacing local progress.
+- Automatic rollback snapshot of the pre-import state.
+- Import validation for supported format/schema and a 5 MB size limit.
+- Input sanitization for imported strings and unsafe object keys.
+- Backup summary for answered questions, training days, errors and known vocabulary.
+- `tests/backup-smoke.js` and CI coverage for the backup module.
+
+### Changed
+- Public guest mode now clearly explains that study data is local to the current browser.
+- Home page includes a direct shortcut to backup controls.
+- App version advanced to v1.2.0.
+
 ## v1.1.1 — Public Access — 2026-08-18
 
 ### Changed
