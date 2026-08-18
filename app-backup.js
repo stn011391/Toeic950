@@ -35,7 +35,7 @@ function normalizeImportedData(source){
     ...base,
     version:APP_VERSION,
     settings:{
-      score:backupNum(settings.score,10,990)||720,
+      score:settings.score==null||settings.score===''?720:backupNum(settings.score,10,990),
       minutes:[30,60,90].includes(Number(settings.minutes))?Number(settings.minutes):60,
       listen:settings.listen===''||settings.listen==null?'':backupNum(settings.listen,5,495),
       read:settings.read===''||settings.read==null?'':backupNum(settings.read,5,495)
