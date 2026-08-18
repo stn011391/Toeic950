@@ -1,23 +1,27 @@
 # TOEIC 950 Mission Control
 
-Current release: **v1.1.1 — Public Access**
+Current release: **v1.2.0 — Guest Backup**
 
-A browser-based TOEIC training system designed to move from a 720 baseline toward a 950 target through timed practice, diagnostic data, weak-part tracking, error review and adaptive difficulty.
+A public, login-free browser TOEIC training system designed to move from a 720 baseline toward a 950 target through timed practice, diagnostic data, weak-part tracking, error review and adaptive difficulty.
 
-## Public access
+## Public guest mode
 
 - **Public website — no login required.**
-- No account registration is required.
-- No ChatGPT/OpenAI login is required.
-- No OAuth, password, or server-side authentication is used.
-- Study progress is stored only in each visitor's own browser with `localStorage`.
+- No account registration, ChatGPT/OpenAI login, OAuth or password is required.
+- Study progress is stored locally in each visitor's browser with `localStorage`.
 - Public site: `https://stn011391.github.io/Toeic950/`
 
-## v1.1.1 highlights
+## v1.2.0 Guest Backup
 
-- Public/login-free access is now explicitly documented.
-- Removed the private personalized greeting from the public website.
-- Core training behavior and the 532-question bank remain unchanged from v1.1.0.
+- Added a dedicated **Guest Mode / Backup** page.
+- Export the complete local learning record as a portable JSON backup.
+- Import a previous JSON backup on another browser or device.
+- Import preview shows answered-question count, training days, errors and known vocabulary before overwrite.
+- Current local progress is saved as a one-step rollback snapshot before import.
+- Backup files are processed locally in the browser and are not uploaded to a server.
+- Import rejects unknown formats, future schema versions and files larger than 5 MB.
+- Imported strings are sanitized before being used by the app.
+- Supports both the v1.2 backup envelope and recognizable legacy raw progress objects.
 
 ## v1.1.0 Training Engine highlights
 
@@ -33,19 +37,18 @@ A browser-based TOEIC training system designed to move from a 720 baseline towar
 - Listening in exam/diagnostic mode is limited to one play per audio set.
 - Part 7 uses a left-document / right-question desktop layout.
 - Diagnostic 2.0 uses 36 stratified questions and does not invent a weak part when scores are uniformly strong.
-- Daily missions are based on **actual answered questions / reviewed errors / vocabulary activity**, not manual checkboxes.
-- Browser progress is stored locally with `localStorage`.
-- GitHub Actions validates JavaScript, question-bank integrity and UI contracts before Pages deployment.
+- Daily missions are based on actual answered questions / reviewed errors / vocabulary activity.
 
 ## Files
 
-- `index.html` — application shell and sections
+- `index.html` — application shell, training sections and guest/backup UI
 - `styles.css` — responsive / focus-mode / split-reading UI
 - `data-core.js`, `data-listening.js`, `data-part5.js`, `data-part6.js`, `data-part7.js` — modular original question bank
 - `data.js` — question-bank finalizer / count
 - `app-core.js`, `app-diagnostic.js`, `app-practice.js`, `app-learning.js` — training engine modules
+- `app-backup.js` — guest-mode export/import/rollback engine
 - `app.js` — keyboard controls and application bootstrap
-- `tests/` — zero-dependency Node smoke tests
+- `tests/` — zero-dependency Node smoke tests, including backup validation
 - `PUBLIC_ACCESS.md` — public/login-free deployment notes
 - `VERSION` — current semantic version
 - `CHANGELOG.md` — release history
@@ -54,11 +57,11 @@ A browser-based TOEIC training system designed to move from a 720 baseline towar
 
 Semantic versioning is used:
 
-- `v1.1.x`: fixes and small refinements to the 950 Training Engine
 - `v1.x.0`: meaningful new training capabilities
+- `v1.x.x`: fixes and small refinements
 - `v2.0.0`: major architecture / learning-system redesign
 
-The `v1.0.0`, `v1.1.0` and `v1.1.1` branches are release snapshots. Active development continues on `main`.
+Release snapshot branches are kept for published versions. Active development continues on `main`.
 
 ## Notes
 
