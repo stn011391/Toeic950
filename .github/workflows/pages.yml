@@ -2,7 +2,7 @@ name: Validate and Deploy TOEIC950
 
 on:
   push:
-    branches: ["main", "agent/v1.2.0"]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: pages
   cancel-in-progress: true
 
 jobs:
@@ -30,7 +30,6 @@ jobs:
         run: node tests/backup-smoke.js
 
   deploy:
-    if: github.ref == 'refs/heads/main'
     needs: validate
     environment:
       name: github-pages
