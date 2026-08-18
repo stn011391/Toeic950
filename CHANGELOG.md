@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.1.1 — Public Access — 2026-08-18
+
+### Changed
+- Confirmed the repository is public and the website is intended for unrestricted public access.
+- Explicitly documented that no login, registration, ChatGPT/OpenAI authentication, OAuth or password is required.
+- Removed the private `Steven` greeting from the public website and replaced it with a generic greeting.
+- Added `PUBLIC_ACCESS.md` with deployment/access notes.
+- Study data continues to stay in each visitor's own browser via `localStorage`.
+
 ## v1.1.0 — 950 Training Engine — 2026-08-17
 
 ### Added
