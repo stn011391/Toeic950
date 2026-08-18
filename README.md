@@ -1,10 +1,25 @@
 # TOEIC 950 Mission Control
 
-Current release: **v1.1.0 — 950 Training Engine**
+Current release: **v1.1.1 — Public Access**
 
 A browser-based TOEIC training system designed to move from a 720 baseline toward a 950 target through timed practice, diagnostic data, weak-part tracking, error review and adaptive difficulty.
 
-## v1.1.0 highlights
+## Public access
+
+- **Public website — no login required.**
+- No account registration is required.
+- No ChatGPT/OpenAI login is required.
+- No OAuth, password, or server-side authentication is used.
+- Study progress is stored only in each visitor's own browser with `localStorage`.
+- Public site: `https://stn011391.github.io/Toeic950/`
+
+## v1.1.1 highlights
+
+- Public/login-free access is now explicitly documented.
+- Removed the private personalized greeting from the public website.
+- Core training behavior and the 532-question bank remain unchanged from v1.1.0.
+
+## v1.1.0 Training Engine highlights
 
 - **532 original practice questions** across Parts 2–7.
 - Difficulty layers: **720 / 800 / 900 / 950**.
@@ -31,6 +46,7 @@ A browser-based TOEIC training system designed to move from a 720 baseline towar
 - `app-core.js`, `app-diagnostic.js`, `app-practice.js`, `app-learning.js` — training engine modules
 - `app.js` — keyboard controls and application bootstrap
 - `tests/` — zero-dependency Node smoke tests
+- `PUBLIC_ACCESS.md` — public/login-free deployment notes
 - `VERSION` — current semantic version
 - `CHANGELOG.md` — release history
 
@@ -42,7 +58,7 @@ Semantic versioning is used:
 - `v1.x.0`: meaningful new training capabilities
 - `v2.0.0`: major architecture / learning-system redesign
 
-The `v1.0.0` and `v1.1.0` branches are release snapshots. Active development continues on `main`.
+The `v1.0.0`, `v1.1.0` and `v1.1.1` branches are release snapshots. Active development continues on `main`.
 
 ## Notes
 
