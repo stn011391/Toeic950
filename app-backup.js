@@ -37,8 +37,8 @@ function normalizeImportedData(source){
     settings:{
       score:backupNum(settings.score,10,990)||720,
       minutes:[30,60,90].includes(Number(settings.minutes))?Number(settings.minutes):60,
-      listen:settings.listen===''?'':backupNum(settings.listen,5,495),
-      read:settings.read===''?'':backupNum(settings.read,5,495)
+      listen:settings.listen===''||settings.listen==null?'':backupNum(settings.listen,5,495),
+      read:settings.read===''||settings.read==null?'':backupNum(settings.read,5,495)
     },
     dailyStats:safe.dailyStats&&typeof safe.dailyStats==='object'&&!Array.isArray(safe.dailyStats)?safe.dailyStats:{},
     history:safe.history&&typeof safe.history==='object'&&!Array.isArray(safe.history)?safe.history:{},
@@ -75,16 +75,15 @@ function renderBackup(){
   Object.entries(map).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val});
   const storage=document.getElementById('guestStorageStatus');
   if(storage)storage.textContent=backupStorageAvailable()?'本機儲存可用':'本機儲存受限';
-  const rollback=document.getElementById('rollbackImportBtn');
-  if(rollback)rollback.classList.toggle('hidden',!localStorage.getItem(ROLLBACK_KEY));
+  let hasRollback=false;try{hasRollback=!!localStorage.getItem(ROLLBACK_KEY)}catch(e){}
+  const rollback=document.getElementById('rollbackImportBtn');if(rollback)rollback.classList.toggle('hidden',!hasRollback);
 }
 function exportProgress(){
   const payload={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:APP_VERSION,exportedAt:new Date().toISOString(),data};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
   const url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download=`toeic950-progress-${today()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);
-  setBackupStatus(`已匯出 ${a.download}。此檔案只包含你的本機學習紀錄。`,'success');
-  renderBackup();
+  setBackupStatus(`已匯出 ${a.download}。此檔案只包含你的本機學習紀錄。`,'success');renderBackup();
 }
 function openImportPicker(){const input=document.getElementById('backupImportFile');if(input)input.click()}
 function extractBackupData(parsed){
@@ -105,18 +104,14 @@ async function importProgressFile(input){
     const ok=confirm(`準備匯入學習紀錄：\n\n累積作答：${s.questions} 題\n訓練天數：${s.days} 天\n錯題：${s.errors} 題\n熟悉單字：${s.vocab} 個\n\n匯入會取代目前這台裝置的進度。是否繼續？`);
     if(!ok){setBackupStatus('已取消匯入。');return}
     try{localStorage.setItem(ROLLBACK_KEY,JSON.stringify(data))}catch(e){}
-    data=candidate;save();updateAll();renderBackup();
-    setBackupStatus(`匯入完成：${s.questions} 題作答、${s.days} 個訓練日已還原。`,'success');
-  }catch(err){
-    console.error(err);setBackupStatus(`匯入失敗：${err.message||'檔案格式錯誤'}`,'error');
-  }finally{input.value=''}
+    data=candidate;save();updateAll();renderBackup();setBackupStatus(`匯入完成：${s.questions} 題作答、${s.days} 個訓練日已還原。`,'success');
+  }catch(err){console.error(err);setBackupStatus(`匯入失敗：${err.message||'檔案格式錯誤'}`,'error')}
+  finally{input.value=''}
 }
 function rollbackImport(){
   try{
     const raw=localStorage.getItem(ROLLBACK_KEY);if(!raw)throw new Error('沒有可還原的匯入前紀錄。');
-    data=normalizeImportedData(JSON.parse(raw));save();localStorage.removeItem(ROLLBACK_KEY);updateAll();renderBackup();
-    setBackupStatus('已還原成上一次匯入前的學習紀錄。','success');
+    data=normalizeImportedData(JSON.parse(raw));save();localStorage.removeItem(ROLLBACK_KEY);updateAll();renderBackup();setBackupStatus('已還原成上一次匯入前的學習紀錄。','success');
   }catch(err){setBackupStatus(`還原失敗：${err.message}`,'error')}
 }
-const backupNav=document.querySelector('[data-go="backup"]');
-if(backupNav)backupNav.addEventListener('click',()=>setTimeout(renderBackup,0));
+const backupNav=document.querySelector('[data-go="backup"]');if(backupNav)backupNav.addEventListener('click',()=>setTimeout(renderBackup,0));
