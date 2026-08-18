@@ -12,6 +12,7 @@ const raw={settings:{score:875,minutes:90,listen:440,read:435},practice:{total:1
 const wrapped={format:'toeic950-progress',schemaVersion:1,appVersion:'v1.1.1',data:raw};
 const imported=api.normalizeImportedData(api.extractBackupData(wrapped)),s=api.backupSummary(imported);
 assert(imported.version==='v1.2.0','import upgrades app version');assert(imported.settings.score===875,'score restored');assert(imported.settings.minutes===90,'minutes restored');assert(s.questions===123,'question count restored');assert(s.days===2,'training days restored');assert(s.errors===1,'errors restored');assert(s.vocab===2,'vocab restored');assert(!imported.errors[0].q.includes('<')&&!imported.errors[0].q.includes('>'),'imported HTML sanitized');
+const legacyDefaults=api.normalizeImportedData({settings:{},practice:{}});assert(legacyDefaults.settings.score===720,'legacy missing score uses 720');assert(legacyDefaults.settings.listen===''&&legacyDefaults.settings.read==='','legacy missing LR stays blank');
 let futureRejected=false;try{api.extractBackupData({format:'toeic950-progress',schemaVersion:99,data:{}})}catch(e){futureRejected=true}assert(futureRejected,'future schema rejected');
 let unknownRejected=false;try{api.extractBackupData({hello:'world'})}catch(e){unknownRejected=true}assert(unknownRejected,'unknown JSON rejected');
 console.log('PASS backup-smoke');
