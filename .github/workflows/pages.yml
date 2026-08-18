@@ -26,6 +26,8 @@ jobs:
         run: node tests/data-smoke.js
       - name: UI contract test
         run: node tests/app-contract.js
+      - name: Backup smoke test
+        run: node tests/backup-smoke.js
 
   deploy:
     needs: validate
