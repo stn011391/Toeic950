@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TOEIC 950 Mission Control v1.1.1</title>
-<meta name="description" content="TOEIC 720 挑戰 950：自適應診斷、訓練/模考雙模式、500+ 題題庫、錯題本與進度追蹤。公開使用、免登入、免註冊。" />
+<title>TOEIC 950 Mission Control v1.2.0</title>
+<meta name="description" content="TOEIC 720 挑戰 950：自適應診斷、訓練/模考雙模式、500+ 題題庫、錯題本、進度追蹤與訪客備份。公開使用、免登入、可匯出/匯入學習紀錄。" />
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
 <aside class="side">
-  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.1.1 · Public Access</span></div></div>
+  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.2.0 · Guest Backup</span></div></div>
   <nav>
     <button class="active" data-go="home">🏠 今日任務</button>
     <button data-go="diagnostic">🎯 弱點診斷</button>
@@ -19,15 +19,16 @@
     <button data-go="vocab">🧠 950 單字庫</button>
     <button data-go="errors">📕 錯題本</button>
     <button data-go="progress">📈 進度追蹤</button>
+    <button data-go="backup">💾 訪客 / 備份</button>
   </nav>
-  <div class="side-card"><b>公開免登入</b><p>任何人都可直接使用，不需要 ChatGPT、GitHub 或其他帳號。學習紀錄只保存在各自的瀏覽器。</p></div>
+  <div class="side-card"><b>訪客模式</b><p>免登入直接使用。進度存在目前瀏覽器，也可匯出 JSON 備份，換裝置後再匯入還原。</p></div>
 </aside>
 <main>
   <header class="top"><div><h1 id="topTitle">Good afternoon.</h1><p>今天不是「學英文」，而是在縮短 720 → 950 的分數差距。</p></div><div class="badge"><strong id="streak">0 天</strong><small>連續訓練</small></div></header>
 
   <section class="section active" id="home">
     <div class="hero">
-      <div><h2>TOEIC 950<br/>Project</h2><p>從 720 往 950 前進，把訓練聚焦在考點辨識、速度、精準度與錯題消滅。<b>公開使用・免登入・免註冊</b>，學習進度只儲存在你的瀏覽器。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button></div></div>
+      <div><h2>TOEIC 950<br/>Project</h2><p>從 720 往 950 前進，把訓練聚焦在考點辨識、速度、精準度與錯題消滅。<b>訪客模式・免登入</b>，可隨時把學習進度匯出帶走。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button><button class="btn btn-soft" onclick="go('backup')">備份學習進度</button></div></div>
       <div class="hero-stats"><div class="hero-stat"><strong id="heroCurrent">720</strong><small>目前分數</small></div><div class="hero-stat"><strong>950</strong><small>目標分數</small></div><div class="hero-stat"><strong id="gapScore">230</strong><small>尚需提升</small></div></div>
     </div>
 
@@ -93,6 +94,33 @@
     <div class="grid g4"><div class="metric"><strong id="pDays">0</strong><small>訓練天數</small></div><div class="metric"><strong id="pQuestions">0</strong><small>累積練習題</small></div><div class="metric"><strong id="pAccuracy">—</strong><small>累積正確率</small></div><div class="metric"><strong id="pVocab">0</strong><small>熟悉單字</small></div></div>
     <div class="grid g2" style="margin-top:16px"><div class="panel"><h3>最近 7 天完成率</h3><div class="bar-chart" id="weekChart"></div></div><div class="panel"><h3>下一步建議</h3><p id="progressAdvice"></p><div class="callout">當練習正確率穩定 ≥ 90%，下一階段必須增加「限時」壓力；否則只是在做會做的題。</div></div></div>
   </section>
+
+  <section class="section" id="backup">
+    <div class="title-row"><h2>💾 訪客模式 / 學習紀錄</h2><span>免登入，也能把進度帶到另一台裝置</span></div>
+    <div class="grid g2">
+      <div class="panel">
+        <span class="tag">Guest Mode</span><h3>訪客模式已啟用</h3>
+        <p>不建立帳號、不上傳學習紀錄。你的資料只存在目前瀏覽器的 <code>localStorage</code>。</p>
+        <div class="callout"><b id="guestStorageStatus">檢查本機儲存中…</b><br>換電腦、換瀏覽器或清除網站資料前，請先匯出備份。</div>
+      </div>
+      <div class="panel">
+        <h3>目前本機進度</h3>
+        <div class="grid g4"><div class="metric"><strong id="backupQuestions">0</strong><small>累積作答</small></div><div class="metric"><strong id="backupDays">0</strong><small>訓練日</small></div><div class="metric"><strong id="backupErrors">0</strong><small>錯題</small></div><div class="metric"><strong id="backupVocab">0</strong><small>熟悉單字</small></div></div>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="panel">
+        <h3>⬇ 匯出學習紀錄</h3><p>下載一份 JSON 備份檔。內容包含分數設定、每日進度、作答統計、診斷、錯題與單字紀錄。</p>
+        <button class="btn btn-primary" onclick="exportProgress()">匯出學習紀錄</button>
+      </div>
+      <div class="panel">
+        <h3>⬆ 匯入 / 還原</h3><p>選擇之前匯出的 JSON。匯入前會先顯示摘要並要求確認，而且會保留一份「匯入前狀態」供你復原。</p>
+        <div class="actions"><button class="btn btn-green" onclick="openImportPicker()">選擇備份檔</button><button id="rollbackImportBtn" class="btn btn-soft hidden" onclick="rollbackImport()">還原匯入前狀態</button></div>
+        <input id="backupImportFile" type="file" accept="application/json,.json" style="display:none" onchange="importProgressFile(this)" />
+      </div>
+    </div>
+    <div id="backupStatus" class="callout" style="margin-top:16px">備份與匯入都在你的瀏覽器本機處理，不會把檔案上傳到伺服器。</div>
+  </section>
 </main>
 </div>
 
@@ -106,6 +134,7 @@
 <script src="app-diagnostic.js"></script>
 <script src="app-practice.js"></script>
 <script src="app-learning.js"></script>
+<script src="app-backup.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
