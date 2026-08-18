@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TOEIC 950 Mission Control v1.1.0</title>
-<meta name="description" content="TOEIC 720 挑戰 950：自適應診斷、訓練/模考雙模式、500+ 題題庫、錯題本與進度追蹤。" />
+<title>TOEIC 950 Mission Control v1.1.1</title>
+<meta name="description" content="TOEIC 720 挑戰 950：自適應診斷、訓練/模考雙模式、500+ 題題庫、錯題本與進度追蹤。公開使用、免登入、免註冊。" />
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
 <aside class="side">
-  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.1.0 · 950 Training Engine</span></div></div>
+  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.1.1 · Public Access</span></div></div>
   <nav>
     <button class="active" data-go="home">🏠 今日任務</button>
     <button data-go="diagnostic">🎯 弱點診斷</button>
@@ -20,14 +20,14 @@
     <button data-go="errors">📕 錯題本</button>
     <button data-go="progress">📈 進度追蹤</button>
   </nav>
-  <div class="side-card"><b>核心原則</b><p>950 的關鍵不是做更多題，而是把「會錯的題型」變成固定得分。每天記錄錯因，下一次看到同類題要更快、更準。</p></div>
+  <div class="side-card"><b>公開免登入</b><p>任何人都可直接使用，不需要 ChatGPT、GitHub 或其他帳號。學習紀錄只保存在各自的瀏覽器。</p></div>
 </aside>
 <main>
-  <header class="top"><div><h1 id="topTitle">Good afternoon, Steven.</h1><p>今天不是「學英文」，而是在縮短 720 → 950 的分數差距。</p></div><div class="badge"><strong id="streak">1 天</strong><small>連續訓練</small></div></header>
+  <header class="top"><div><h1 id="topTitle">Good afternoon.</h1><p>今天不是「學英文」，而是在縮短 720 → 950 的分數差距。</p></div><div class="badge"><strong id="streak">0 天</strong><small>連續訓練</small></div></header>
 
   <section class="section active" id="home">
     <div class="hero">
-      <div><h2>TOEIC 950<br/>Project</h2><p>你已經有 720 分的底子。現在把訓練從「廣泛學習」切換成「考點辨識、速度、精準度、錯題消滅」。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button></div></div>
+      <div><h2>TOEIC 950<br/>Project</h2><p>從 720 往 950 前進，把訓練聚焦在考點辨識、速度、精準度與錯題消滅。<b>公開使用・免登入・免註冊</b>，學習進度只儲存在你的瀏覽器。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button></div></div>
       <div class="hero-stats"><div class="hero-stat"><strong id="heroCurrent">720</strong><small>目前分數</small></div><div class="hero-stat"><strong>950</strong><small>目標分數</small></div><div class="hero-stat"><strong id="gapScore">230</strong><small>尚需提升</small></div></div>
     </div>
 
@@ -36,7 +36,7 @@
 
     <div class="title-row"><h2>今日 60 分鐘任務</h2><span>可在設定中切換 30 / 60 / 90 分鐘</span></div>
     <div class="grid g2">
-      <div class="panel"><div class="form-row"><div class="field"><label>每日時間</label><select id="dailyMinutes" onchange="saveSettings();renderTasks()"><option value="30">30 分鐘</option><option value="60" selected>60 分鐘</option><option value="90">90 分鐘</option></select></div><div class="field"><label>目前總分</label><input id="currentScore" type="number" min="10" max="990" step="5" value="720" onchange="saveSettings();updateScoreUI()" /></div><div class="field"><label>Listening（可選）</label><input id="listenScore" type="number" min="5" max="495" step="5" placeholder="例如 380" onchange="saveSettings()" /></div><div class="field"><label>Reading（可選）</label><input id="readScore" type="number" min="5" max="495" step="5" placeholder="例如 340" onchange="saveSettings()" /></div></div><p class="hint">若你知道最近一次 L/R 分數，填入後我會用於訓練建議；不知道也沒關係，先做弱點診斷。</p></div>
+      <div class="panel"><div class="form-row"><div class="field"><label>每日時間</label><select id="dailyMinutes" onchange="saveSettings();renderTasks()"><option value="30">30 分鐘</option><option value="60" selected>60 分鐘</option><option value="90">90 分鐘</option></select></div><div class="field"><label>目前總分</label><input id="currentScore" type="number" min="10" max="990" step="5" value="720" onchange="saveSettings();updateScoreUI()" /></div><div class="field"><label>Listening（可選）</label><input id="listenScore" type="number" min="5" max="495" step="5" placeholder="例如 380" onchange="saveSettings()" /></div><div class="field"><label>Reading（可選）</label><input id="readScore" type="number" min="5" max="495" step="5" placeholder="例如 340" onchange="saveSettings()" /></div></div><p class="hint">若你知道最近一次 L/R 分數，填入後會用於訓練建議；不知道也沒關係，先做弱點診斷。</p></div>
       <div class="panel"><div class="metric"><strong id="todayPct">0%</strong><small>今日完成率</small></div><div class="progress" style="margin-top:12px"><div id="todayBar" style="width:0%"></div></div><p id="dailyAdvice">先完成弱點診斷，再開始每日任務。</p></div>
     </div>
     <div class="panel" style="margin-top:16px"><div id="taskList"></div></div>
