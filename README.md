@@ -1,25 +1,25 @@
 # TOEIC 950 Mission Control
 
-Current release: **v1.4.0 — True Diversity Family Deck**
+Current release: **v1.5.0 — Similarity Shield**
 
-A public, login-free TOEIC training system with timed practice, diagnostic data, adaptive difficulty, error review, portable guest backup and structural-family-aware question selection.
+A public, login-free TOEIC training system with timed practice, diagnostic data, adaptive difficulty, error review, portable guest backup and human-perceived anti-repeat selection.
 
-## v1.4.0 True Diversity
+## v1.5.0 Similarity Shield
 
-The v1.3.0 bank was numerically large, but too many questions were variants of the same template. v1.4.0 fixes the selection model itself.
+v1.4.0 showed that a different family ID does not necessarily mean a genuinely different question. Two questions can have different verbs/nouns but still feel identical to a learner. v1.5.0 therefore stops relying on family IDs alone.
 
-- Adds **800 additional questions** focused on genuinely different low/mid-level structures.
-- Adds **60 new Part 5 structures** for the 720–800 path.
-- Adds **20 new Part 2 response structures**, **20 Part 3 conversation families**, and **20 Part 4 talk families**.
-- Legacy template variants are now mapped back to their real structural family instead of being counted as independent families.
-- Replaces the short cooldown with a **Family Deck**:
-  - Part 2 / Part 5: one structural family maximum per round.
-  - Parts 3 / 4 / 6 / 7: one conversation/document family at a time, preserving normal multi-question sets.
-  - Previously used families stay out of the deck until most eligible families have been exhausted.
-  - Exact question and document variants also keep their own recency history.
-- The default Part 5 720–800 path now has **90+ distinct structural families**, so five consecutive 10-question rounds can use 50 different families.
-- CI now tests five consecutive rounds by **family**, not merely by Question ID.
-- Exact duplicate fingerprints are removed before the question bank is finalized.
+- Adds a **grammar-structure skeleton** for Parts 2 and 5. Content words such as department names, documents, suppliers, dates and quantities are masked before similarity is calculated.
+- Prevents high-similarity structures in the same round and strongly avoids them across recent rounds.
+- Tracks recent **answer-option signatures** so the same distractor/answer set is not repeatedly recycled.
+- Balances each round by **skill / error cause**, normally allowing no more than two questions from the same cause category in a strict draw.
+- Adds **scenario/context rotation** so engineering, quality, sales, operations and other business contexts do not dominate one round.
+- Doubles the v1.4 true-diversity context variants from four to eight for the main low/mid-level generated pack.
+- Adds another ~800 generated variants before duplicate cleanup, pushing the total bank beyond **7,700** items.
+- Keeps exact-question, conversation/document, structural-skeleton, option-set and context history in browser local storage.
+- Replaces the old family-only CI test with two five-round checks:
+  - `tests/repeat-smoke.js` checks exact and near-duplicate structures.
+  - `tests/human-repeat-audit.js` literally plays five rounds for every Part and prints the actual selected questions to CI logs while checking structure, skill, options and context repetition.
+- Fixes the v1.4 test-runtime problem where a Node smoke test could reach browser-only `document.write()` logic.
 
 ## Public guest mode
 
@@ -47,10 +47,12 @@ The v1.3.0 bank was numerically large, but too many questions were variants of t
 
 ## Main files
 
-- `data-diversity-v2.js` — true-diversity low/mid-level family pack
+- `data-diversity-v2.js` — true-diversity low/mid-level structure pack
+- `data-diversity-contexts.js` — extra scenario variants for context rotation
 - `data-diversity-cleanup.js` — removes accidental exact fingerprints
-- `app-repeat-control.js` — Family Deck selection engine
-- `tests/repeat-smoke.js` — five-round structural-family test
+- `app-repeat-control.js` — Similarity Shield selection engine
+- `tests/repeat-smoke.js` — five-round structural-similarity test
+- `tests/human-repeat-audit.js` — five-round human-perceived repetition audit
 - `app-backup.js` — guest export/import/rollback
 - `VERSION` / `CHANGELOG.md` — release tracking
 
