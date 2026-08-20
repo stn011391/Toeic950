@@ -1,4 +1,4 @@
-const APP_VERSION='v1.2.0';
+const APP_VERSION='v1.3.0';
 const PARTS=[
  {n:1,name:'Photographs',zh:'照片描述',focus:'快速掃描人物、動作、位置',tips:['先看主體與動作','注意被動語態與位置介系詞','不要因單字相同就選']},
  {n:2,name:'Question–Response',zh:'應答問題',focus:'第一個疑問詞 + 語意反應',tips:['Who/When/Where 開頭立刻分類','防同音字干擾','間接回答很常見']},
