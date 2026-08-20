@@ -1,6 +1,6 @@
 const fs=require('fs'),vm=require('vm');
 function assert(c,m){if(!c){console.error('FAIL:',m);process.exit(1)}}
-const dataFiles=['data-core.js','data-listening.js','data-part5.js','data-part6.js','data-part7.js','data-expansion-core.js','data-expansion-listening.js','data-expansion-part5.js','data-expansion-reading.js','data-diversity-v2.js','data-diversity-cleanup.js'];
+const dataFiles=['data-core.js','data-listening.js','data-part5.js','data-part6.js','data-part7.js','data-expansion-core.js','data-expansion-listening.js','data-expansion-part5.js','data-expansion-reading.js','data-diversity-v2.js','data-diversity-contexts.js','data-diversity-cleanup.js'];
 const store=new Map();const dummyEl=()=>({textContent:'',value:'720',classList:{add:()=>{},remove:()=>{}},querySelector:()=>null});
 const ctx={console,Math,JSON,Set,Map,localStorage:{setItem:(k,v)=>store.set(k,String(v)),getItem:k=>store.has(k)?store.get(k):null,removeItem:k=>store.delete(k)},document:{getElementById:()=>dummyEl(),querySelector:()=>null},practice:{list:[],answers:[]},startPractice:()=>{},resetPractice:()=>{},chosenDifficulty:()=>720,prepareQuestion:q=>q,updateTimer:()=>{},renderPractice:()=>{},focusQuestionBox:()=>{},setInterval:()=>0,Date,shuffle:null};
 vm.createContext(ctx);vm.runInContext(dataFiles.map(f=>fs.readFileSync(f,'utf8')).join('\n')+'\nglobalThis.__Q=QUESTIONS;',ctx);ctx.QUESTIONS=ctx.__Q;ctx.shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
