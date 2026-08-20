@@ -1,13 +1,41 @@
-// v1.3.0 anti-repeat engine: exact-question cooldown + structural-family cooldown
-const RECENT_QUESTION_KEY='toeic950RecentQuestionsV1';
-function loadRepeatState(){try{const x=JSON.parse(localStorage.getItem(RECENT_QUESTION_KEY)||'null');if(x&&Array.isArray(x.ids)&&Array.isArray(x.families))return x}catch(e){}return{ids:[],families:[]}}
+// v1.4.0 Family Deck engine
+// Goal: prevent 'same sentence pattern, different nouns' repetition.
+const RECENT_QUESTION_KEY='toeic950RecentQuestionsV2';
+function loadRepeatState(){
+  try{const x=JSON.parse(localStorage.getItem(RECENT_QUESTION_KEY)||'null');if(x&&Array.isArray(x.ids)&&Array.isArray(x.families)&&Array.isArray(x.groups))return x}catch(e){}
+  return{ids:[],families:[],groups:[]};
+}
 let repeatState=loadRepeatState();
 function saveRepeatState(){try{localStorage.setItem(RECENT_QUESTION_KEY,JSON.stringify(repeatState))}catch(e){}}
-function familyOf(q){return q.family||q.id}
-function repeatCaps(part,all){const uniqueFamilies=[...new Set(all.map(familyOf))];return{ids:Math.max(60,Math.min(500,Math.floor(all.length*.45))),families:Math.max(6,Math.min(18,Math.floor(uniqueFamilies.length*.45)))}}
-function recentForPart(part,all){const idsInPart=new Set(all.map(q=>q.id)),familySet=new Set(all.map(familyOf)),caps=repeatCaps(part,all);return{ids:new Set(repeatState.ids.filter(id=>idsInPart.has(id)).slice(-caps.ids)),families:new Set(repeatState.families.filter(f=>familySet.has(f)).slice(-caps.families)),caps}}
-function difficultyPool(part,level,count=10){const all=QUESTIONS[part]||[];let primary;if(level===720)primary=all.filter(q=>q.difficulty<=800);else if(level===800)primary=all.filter(q=>q.difficulty>=800&&q.difficulty<=900);else if(level===900)primary=all.filter(q=>q.difficulty>=900);else primary=all.filter(q=>q.difficulty>=950);const fallback=level===950?all.filter(q=>q.difficulty>=900):level===900?all.filter(q=>q.difficulty>=800):all;const recent=recentForPart(part,all),seen=new Set(),pool=[];const stages=[primary.filter(q=>!recent.ids.has(q.id)&&!recent.families.has(familyOf(q))),fallback.filter(q=>!recent.ids.has(q.id)&&!recent.families.has(familyOf(q))),all.filter(q=>!recent.ids.has(q.id)&&!recent.families.has(familyOf(q))),primary.filter(q=>!recent.ids.has(q.id)),fallback.filter(q=>!recent.ids.has(q.id)),all.filter(q=>!recent.ids.has(q.id)),primary,fallback,all];for(const stage of stages){for(const item of shuffle(stage)){if(!seen.has(item.id)){seen.add(item.id);pool.push(item)}if(pool.length>=count)return pool}}return pool}
-function rememberQuestionExposure(list){for(const q of list){if(!q?.id)continue;repeatState.ids.push(q.id);repeatState.families.push(familyOf(q))}repeatState.ids=repeatState.ids.slice(-1800);repeatState.families=repeatState.families.slice(-400);saveRepeatState()}
-const startPracticeBeforeRepeatControl=startPractice;
-startPractice=function(){startPracticeBeforeRepeatControl();if(practice?.list?.length){rememberQuestionExposure(practice.list);const msg=document.getElementById('pracMessage');if(msg&&!practice.answers.length)msg.textContent='防重複已啟用：優先避開近期做過的題目與相同句型家族。'}};
-function clearQuestionCooldown(){repeatState={ids:[],families:[]};saveRepeatState()}
+function familyOf(q){return q?.family||q?.id||'unknown'}
+function groupKeyOf(q){if(q?.part===3||q?.part===4)return q.spoken||q.id;if(q?.part===6||q?.part===7)return q.passage||q.id;return q.id}
+function pushUniqueRecent(arr,value,max){const i=arr.indexOf(value);if(i>=0)arr.splice(i,1);arr.push(value);if(arr.length>max)arr.splice(0,arr.length-max)}
+function rememberQuestionExposure(list){for(const q of list){if(!q?.id)continue;pushUniqueRecent(repeatState.ids,q.id,2400);pushUniqueRecent(repeatState.families,familyOf(q),900);pushUniqueRecent(repeatState.groups,groupKeyOf(q),1200)}saveRepeatState()}
+function clearQuestionCooldown(){repeatState={ids:[],families:[],groups:[]};saveRepeatState()}
+function difficultyQuestions(part,level){const all=QUESTIONS[part]||[];if(level===720)return all.filter(q=>q.difficulty<=800);if(level===800)return all.filter(q=>q.difficulty>=800&&q.difficulty<=900);if(level===900)return all.filter(q=>q.difficulty>=900);return all.filter(q=>q.difficulty>=950)}
+function fallbackQuestions(part,level){const all=QUESTIONS[part]||[];if(level===950)return all.filter(q=>q.difficulty>=900);if(level===900)return all.filter(q=>q.difficulty>=800);return all}
+function unitize(part,questions){
+  if(part===2||part===5){const m=new Map();for(const q of questions){const f=familyOf(q);if(!m.has(f))m.set(f,[]);m.get(f).push(q)}return [...m].map(([family,qs])=>({family,key:family,qs}))}
+  const m=new Map();for(const q of questions){const key=groupKeyOf(q);if(!m.has(key))m.set(key,[]);m.get(key).push(q)}return [...m].map(([key,qs])=>({family:familyOf(qs[0]),key,qs}))
+}
+function neededUnits(part,count){if(part===3||part===4)return Math.ceil(count/3);if(part===6||part===7)return Math.ceil(count/4);return count}
+function recentFamilySet(eligibleFamilies,need){const familySet=new Set(eligibleFamilies),maxRecent=Math.max(0,familySet.size-need);const out=[];for(let i=repeatState.families.length-1;i>=0&&out.length<maxRecent;i--){const f=repeatState.families[i];if(familySet.has(f)&&!out.includes(f))out.push(f)}return new Set(out)}
+function recentGroupSet(keys){const set=new Set(keys),limit=Math.max(0,set.size-1),out=[];for(let i=repeatState.groups.length-1;i>=0&&out.length<limit;i--){const k=repeatState.groups[i];if(set.has(k)&&!out.includes(k))out.push(k)}return new Set(out)}
+function chooseUnitVariant(unit,recentGroups,recentIds){const fresh=unit.qs.filter(q=>!recentGroups.has(groupKeyOf(q))&&!recentIds.has(q.id));const semi=unit.qs.filter(q=>!recentIds.has(q.id));const source=fresh.length?fresh:semi.length?semi:unit.qs;if(!source.length)return[];if(source[0].part===2||source[0].part===5)return[shuffle(source)[0]];return shuffle(source).sort((a,b)=>a.id.localeCompare(b.id))}
+function diversePick(part,level,count){
+  const primary=difficultyQuestions(part,level),fallback=fallbackQuestions(part,level),all=QUESTIONS[part]||[],need=neededUnits(part,count);
+  const primaryUnits=unitize(part,primary),fallbackUnits=unitize(part,fallback),allUnits=unitize(part,all);
+  const eligibleFamilies=[...new Set(primaryUnits.map(u=>u.family))],recentFamilies=recentFamilySet(eligibleFamilies,need),recentIds=new Set(repeatState.ids),recentGroups=recentGroupSet(allUnits.map(u=>u.key));
+  const chosen=[],chosenFamilies=new Set(),chosenKeys=new Set();
+  function take(units,avoidFamilies=true,avoidGroups=true){for(const u of shuffle(units)){if(chosenFamilies.has(u.family)||chosenKeys.has(u.key))continue;if(avoidFamilies&&recentFamilies.has(u.family))continue;if(avoidGroups&&recentGroups.has(u.key))continue;chosen.push(u);chosenFamilies.add(u.family);chosenKeys.add(u.key);if(chosen.length>=need)return true}return false}
+  if(!take(primaryUnits,true,true))if(!take(primaryUnits,true,false))if(!take(fallbackUnits,true,true))if(!take(fallbackUnits,true,false))if(!take(primaryUnits,false,true))if(!take(primaryUnits,false,false))if(!take(allUnits,false,true))take(allUnits,false,false);
+  const out=[];for(const u of chosen){out.push(...chooseUnitVariant(u,recentGroups,recentIds));if(out.length>=count)break}
+  return out.slice(0,count)
+}
+// Compatibility for diagnostics/tests that still call difficultyPool directly.
+function difficultyPool(part,level,count=10){return diversePick(part,level,count)}
+const startPracticeBeforeFamilyDeck=startPractice;
+startPractice=function(){
+  resetPractice();const p=+document.getElementById('practicePart').value,count=+document.getElementById('practiceCount').value,level=chosenDifficulty();const raw=diversePick(p,level,count);practice.list=raw.map(prepareQuestion);practice.start=Date.now();practice.currentStarted=Date.now();practice.timer=setInterval(updateTimer,1000);document.getElementById('practiceBox').classList.remove('hidden');renderPractice();focusQuestionBox('practiceBox');
+  if(practice.list.length){rememberQuestionExposure(raw);const msg=document.getElementById('pracMessage');if(msg&&!practice.answers.length)msg.textContent='Family Deck：同輪不重複句型，跨輪優先走完未看過的句型家族。'}
+};
