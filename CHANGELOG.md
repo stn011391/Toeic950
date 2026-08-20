@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.3.0 — Massive Question Bank — 2026-08-20
+
+### Added
+- Added **5,760** new practice questions, bringing Parts 2–7 to **6,292 total questions**.
+- New per-Part totals: Part 2 **700**, Part 3 **996**, Part 4 **996**, Part 5 **1,184**, Part 6 **1,008**, Part 7 **1,408**.
+- Added **175+ structural families** across listening, grammar, text completion and reading comprehension.
+- Expanded contexts across engineering, quality, procurement, logistics, IT, finance, legal, HR, marketing, customer service, operations, facilities and research.
+- Added `app-repeat-control.js` with exact-question and structural-family cooldown history stored locally in the browser.
+- Added `tests/repeat-smoke.js` to simulate repeated practice rounds and reject immediate exact-question repeats.
+- Data CI now validates exact total count, per-Part counts, unique IDs, exact question fingerprints and structural-family diversity.
+
+### Changed
+- Practice selection now prioritizes questions not seen recently and structural families not used recently.
+- Recently used exact questions are used only as fallback when the eligible difficulty pool is too small.
+- Part 7 has substantially more single-, double- and triple-document scenarios and cross-document reasoning.
+- Backup schema remains compatible with v1.2.0; imported progress is upgraded to app version v1.3.0.
+
 ## v1.2.0 — Guest Backup — 2026-08-18
 
 ### Added
