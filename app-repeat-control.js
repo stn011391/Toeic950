@@ -18,21 +18,22 @@ function unitize(part,questions){
   if(part===2||part===5){const m=new Map();for(const q of questions){const f=familyOf(q);if(!m.has(f))m.set(f,[]);m.get(f).push(q)}return [...m].map(([family,qs])=>({family,key:family,qs}))}
   const m=new Map();for(const q of questions){const key=groupKeyOf(q);if(!m.has(key))m.set(key,[]);m.get(key).push(q)}return [...m].map(([key,qs])=>({family:familyOf(qs[0]),key,qs}))
 }
-function neededUnits(part,count){if(part===3||part===4)return Math.ceil(count/3);if(part===6||part===7)return Math.ceil(count/4);return count}
+// Select up to `count` distinct units first. Grouped Parts can have fewer eligible questions
+// per document after difficulty filtering, so using count here guarantees enough material.
+function neededUnits(part,count){return count}
 function recentFamilySet(eligibleFamilies,need){const familySet=new Set(eligibleFamilies),maxRecent=Math.max(0,familySet.size-need);const out=[];for(let i=repeatState.families.length-1;i>=0&&out.length<maxRecent;i--){const f=repeatState.families[i];if(familySet.has(f)&&!out.includes(f))out.push(f)}return new Set(out)}
 function recentGroupSet(keys){const set=new Set(keys),limit=Math.max(0,set.size-1),out=[];for(let i=repeatState.groups.length-1;i>=0&&out.length<limit;i--){const k=repeatState.groups[i];if(set.has(k)&&!out.includes(k))out.push(k)}return new Set(out)}
-function chooseUnitVariant(unit,recentGroups,recentIds){const fresh=unit.qs.filter(q=>!recentGroups.has(groupKeyOf(q))&&!recentIds.has(q.id));const semi=unit.qs.filter(q=>!recentIds.has(q.id));const source=fresh.length?fresh:semi.length?semi:unit.qs;if(!source.length)return[];if(source[0].part===2||source[0].part===5)return[shuffle(source)[0]];return shuffle(source).sort((a,b)=>a.id.localeCompare(b.id))}
+function chooseUnitVariant(unit,recentGroups,recentIds){const fresh=unit.qs.filter(q=>!recentGroups.has(groupKeyOf(q))&&!recentIds.has(q.id));const semi=unit.qs.filter(q=>!recentIds.has(q.id));const source=fresh.length?fresh:semi.length?semi:unit.qs;if(!source.length)return[];if(source[0].part===2||source[0].part===5)return[shuffle(source)[0]];return [...source].sort((a,b)=>a.id.localeCompare(b.id))}
 function diversePick(part,level,count){
   const primary=difficultyQuestions(part,level),fallback=fallbackQuestions(part,level),all=QUESTIONS[part]||[],need=neededUnits(part,count);
   const primaryUnits=unitize(part,primary),fallbackUnits=unitize(part,fallback),allUnits=unitize(part,all);
-  const eligibleFamilies=[...new Set(primaryUnits.map(u=>u.family))],recentFamilies=recentFamilySet(eligibleFamilies,need),recentIds=new Set(repeatState.ids),recentGroups=recentGroupSet(allUnits.map(u=>u.key));
+  const eligibleFamilies=[...new Set(primaryUnits.map(u=>u.family))],recentFamilies=recentFamilySet(eligibleFamilies,Math.min(need,eligibleFamilies.length)),recentIds=new Set(repeatState.ids),recentGroups=recentGroupSet(allUnits.map(u=>u.key));
   const chosen=[],chosenFamilies=new Set(),chosenKeys=new Set();
   function take(units,avoidFamilies=true,avoidGroups=true){for(const u of shuffle(units)){if(chosenFamilies.has(u.family)||chosenKeys.has(u.key))continue;if(avoidFamilies&&recentFamilies.has(u.family))continue;if(avoidGroups&&recentGroups.has(u.key))continue;chosen.push(u);chosenFamilies.add(u.family);chosenKeys.add(u.key);if(chosen.length>=need)return true}return false}
   if(!take(primaryUnits,true,true))if(!take(primaryUnits,true,false))if(!take(fallbackUnits,true,true))if(!take(fallbackUnits,true,false))if(!take(primaryUnits,false,true))if(!take(primaryUnits,false,false))if(!take(allUnits,false,true))take(allUnits,false,false);
   const out=[];for(const u of chosen){out.push(...chooseUnitVariant(u,recentGroups,recentIds));if(out.length>=count)break}
   return out.slice(0,count)
 }
-// Compatibility for diagnostics/tests that still call difficultyPool directly.
 function difficultyPool(part,level,count=10){return diversePick(part,level,count)}
 const startPracticeBeforeFamilyDeck=startPractice;
 startPractice=function(){
