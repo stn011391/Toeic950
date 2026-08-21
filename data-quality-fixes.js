@@ -26,11 +26,9 @@ function qualityText(s){
   if(typeof XCTX!=='undefined')for(const c of XCTX){
     out=out.split(`The ${c.supplier}`).join(c.supplier).split(`the ${c.supplier}`).join(c.supplier);
     out=out.split(`The ${c.item} was delivered`).join(`The ${c.doc} was delivered`);
-    out=out.split(`The ${c.item} is similar`).join('The proposed solution is similar');
-    out=out.split(`The ${c.item} will be replaced`).join('The affected unit will be replaced');
-    out=out.split(`The ${c.item} should be inspected`).join('The received items should be inspected');
-    out=out.split(`Do you remember where the ${c.item} was stored?`).join('Do you remember where the materials were stored?');
-    out=out.split(`Have you already ${c.task}?`).join('Have you already completed the task?');
+    out=out.split(`The ${c.item} is similar`).join(`The ${c.doc} is similar`);
+    out=out.split(`Do you remember where the ${c.item} was stored?`).join(`Do you remember where the ${c.doc} was stored?`);
+    out=out.split(`Have you already ${c.task}?`).join('Have you already completed the assigned task?');
     out=out.split(`help with ${c.task}`).join('help with the task');
     out=out.split(`Is there a ${c.service} near ${c.location}?`).join(`Is ${c.service} available near ${c.location}?`);
     out=out.split(`Has ${c.supplier} confirmed the ${c.deadline}?`).join(`Has ${c.supplier} confirmed the deadline?`);
@@ -52,6 +50,6 @@ for(const arr of Object.values(QUESTIONS))for(const q of arr){
   }
   if(q.family?.startsWith('TD-P4-')&&q.spoken){
     const m=q.spoken.match(/^Attention everyone\. This is an update about the (.+?)\. Because (.+?), the (.+?) will make a temporary change on (.+?)\. Please use (.+?) and contact (.+?) if the change affects your work\. Normal arrangements are expected by (.+?)\.$/);
-    if(m){q.spoken=`Attention everyone. Because ${m[2]}, the ${m[3]} will make a temporary operational change on ${m[4]}. Please use ${m[5]} and contact ${m[6]} if the change affects your work. Normal arrangements are expected by ${m[7]}.`;q.transcript=q.spoken;if(Array.isArray(q.opts)&&q.cause==='主旨')q.opts[0]='To explain a temporary operational change'}
+    if(m){q.spoken=`Attention everyone. Regarding the ${m[1]}, a temporary operational change is necessary. Because ${m[2]}, the ${m[3]} will make the change on ${m[4]}. Please use ${m[5]} and contact ${m[6]} if the change affects your work. Normal arrangements are expected by ${m[7]}.`;q.transcript=q.spoken;if(Array.isArray(q.opts)&&q.cause==='主旨')q.opts[0]=`To explain a change related to the ${m[1]}`}
   }
 }
