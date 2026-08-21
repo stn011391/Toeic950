@@ -1,6 +1,6 @@
 // v1.5.0 generated-language quality pass
 // Repairs combinations where a clause-valued scenario field was inserted into a noun slot,
-// plus a few agreement/article issues revealed by the five-round human audit.
+// plus agreement/article issues revealed by the five-round human audit.
 const ISSUE_NOUN_FIXES=new Map([
  ['a dimensional mismatch','a dimensional mismatch'],
  ['three readings outside tolerance','out-of-tolerance readings'],
@@ -31,13 +31,16 @@ function qualityText(s){
     out=out.split(`The ${c.item} should be inspected`).join('The received items should be inspected');
     out=out.split(`Do you remember where the ${c.item} was stored?`).join('Do you remember where the materials were stored?');
     out=out.split(`Have you already ${c.task}?`).join('Have you already completed the task?');
+    out=out.split(`help with ${c.task}`).join('help with the task');
     out=out.split(`Is there a ${c.service} near ${c.location}?`).join(`Is ${c.service} available near ${c.location}?`);
     out=out.split(`Has ${c.supplier} confirmed the ${c.deadline}?`).join(`Has ${c.supplier} confirmed the deadline?`);
     out=out.split(`${c.person} gave us _____ useful advice about the ${ISSUE_NOUN_FIXES.get(c.issue)||c.issue}.`).join(`${c.person} gave us _____ useful advice about the reported issue.`);
   }
   out=out.replace(/provided she finishes the audit first/g,'provided the audit is completed first');
   if(typeof XCTX!=='undefined')for(const c of XCTX)out=out.split(`due to ${c.reason}`).join(`because ${c.reason}`);
-  out=out.replace(/\bthe a\b/gi,'a').replace(/\bthe an\b/gi,'an').replace(/\ba an\b/gi,'an');
+  out=out.replace(/panels is installed/g,'panels are installed')
+    .replace(/units is installed/g,'units are installed')
+    .replace(/\bthe a\b/gi,'a').replace(/\bthe an\b/gi,'an').replace(/\ba an\b/gi,'an');
   return out;
 }
 for(const arr of Object.values(QUESTIONS))for(const q of arr){
