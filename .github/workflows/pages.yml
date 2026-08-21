@@ -3,6 +3,8 @@ name: Validate and Deploy TOEIC950
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -28,10 +30,13 @@ jobs:
         run: node tests/app-contract.js
       - name: Backup smoke test
         run: node tests/backup-smoke.js
-      - name: Five-round family diversity test
+      - name: Five-round structural diversity test
         run: node tests/repeat-smoke.js
+      - name: Five-round human repetition audit
+        run: node tests/human-repeat-audit.js
 
   deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: validate
     environment:
       name: github-pages

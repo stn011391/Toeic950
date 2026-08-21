@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.5.0 — Similarity Shield — 2026-08-20
+
+### Fixed
+- Family IDs no longer define diversity by themselves. Questions such as “must finish ... by ...” and “must submit ... by ...” are now recognized as the same or highly similar grammatical skeleton.
+- Fixed the v1.4 smoke-test runtime problem that could invoke browser-only `document.write()` from a Node test context.
+- Reduced repeated business scenarios caused by the low/mid diversity pack using only four context records.
+
+### Added
+- Grammar-structure skeleton normalization and Jaccard-style structural similarity scoring.
+- Same-round and cross-round near-duplicate blocking for Parts 2 and 5.
+- Recent answer-option-set tracking.
+- Skill/cause balancing so one grammar/error category does not dominate a round.
+- Scenario/context detection and rotation across departments, documents, suppliers and work situations.
+- Additional context variants for Parts 2–5, adding roughly 800 variants before exact-duplicate cleanup.
+- `tests/human-repeat-audit.js`, which literally draws five rounds per Part and logs the actual questions while enforcing structure, option, skill and context diversity.
+
+### Validation target
+- Five consecutive 10-question Part 2 and Part 5 rounds must avoid both exact structural duplicates and high-similarity grammar skeletons.
+- A strict round must not use one skill/cause more than twice or one detected business context more than twice when enough contexts are available.
+- Grouped Parts must avoid immediate conversation/document reuse.
+
 ## v1.4.0 — True Diversity Family Deck — 2026-08-20
 
 ### Fixed
