@@ -1,5 +1,5 @@
 const fs=require('fs'),vm=require('vm');
-const files=['data-core.js','data-listening.js','data-part5.js','data-part6.js','data-part7.js','data-expansion-core.js','data-expansion-listening.js','data-expansion-part5.js','data-expansion-reading.js','data-diversity-v2.js','data-diversity-contexts.js','data-diversity-cleanup.js','data.js'];
+const files=['data-core.js','data-listening.js','data-part5.js','data-part6.js','data-part7.js','data-expansion-core.js','data-expansion-listening.js','data-expansion-part5.js','data-expansion-reading.js','data-diversity-v2.js','data-diversity-contexts.js','data-quality-fixes.js','data-diversity-cleanup.js','data.js'];
 const src=files.map(f=>fs.readFileSync(f,'utf8')).join('\n')+'\n;globalThis.__toeic={QUESTIONS,QUESTION_COUNT,APP_VERSION};';
 vm.runInThisContext(src,{filename:'toeic-data-bundle.js'});
 const {QUESTIONS,QUESTION_COUNT,APP_VERSION}=globalThis.__toeic;const parts=[2,3,4,5,6,7],all=parts.flatMap(p=>QUESTIONS[p]||[]);
@@ -10,4 +10,7 @@ for(const q of all){assert(Array.isArray(q.opts)&&q.opts.length>=3,`${q.id}: inv
 const fp=q=>[q.part,q.prompt,q.passage||'',q.spoken||'',q.opts.join('|')].join('§');assert(new Set(all.map(fp)).size===all.length,'exact question fingerprints must be unique');
 const families=new Set(all.map(q=>q.family).filter(Boolean));assert(families.size>=350,`need 350+ structural families, got ${families.size}`);for(const p of parts)assert((QUESTIONS[p]||[]).every(q=>q.family),`Part ${p}: every question must have a structural family`);
 const lowP5=new Set(QUESTIONS[5].filter(q=>q.difficulty<=800).map(q=>q.family));assert(lowP5.size>=85,`Part 5 720-800 needs 85+ real families, got ${lowP5.size}`);assert(QUESTIONS[5].length>=1450,'Part 5 bank too small after context expansion');assert(QUESTIONS[2].length>=850,'Part 2 bank too small after context expansion');assert(QUESTIONS[3].length>=1400,'Part 3 bank too small after context expansion');assert(QUESTIONS[4].length>=1400,'Part 4 bank too small after context expansion');
-assert(QUESTIONS[5].filter(q=>q.difficulty>=950).length>=300,'Part 5 950 pool too small');assert(QUESTIONS[7].filter(q=>q.passage?.includes('DOCUMENT 2')).length>=300,'Part 7 multi-doc pool too small');console.log(`PASS data-smoke: ${QUESTION_COUNT} questions, ${families.size} structural families, ${lowP5.size} low/mid Part 5 families`);
+assert(QUESTIONS[5].filter(q=>q.difficulty>=950).length>=300,'Part 5 950 pool too small');assert(QUESTIONS[7].filter(q=>q.passage?.includes('DOCUMENT 2')).length>=300,'Part 7 multi-doc pool too small');
+const language=all.map(q=>[q.prompt,q.spoken,q.transcript,q.passage,...q.opts].filter(Boolean).join(' ')).join('\n');
+for(const bad of ['expense claims was delivered','Have you already check','help with verify','a access support','about the several devices cannot connect','about the session is over capacity','Because of one clause conflicts with policy'])assert(!language.includes(bad),`generated-language quality regression: ${bad}`);
+console.log(`PASS data-smoke: ${QUESTION_COUNT} questions, ${families.size} structural families, ${lowP5.size} low/mid Part 5 families`);
