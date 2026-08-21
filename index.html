@@ -3,14 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TOEIC 950 Mission Control v1.3.0</title>
-<meta name="description" content="TOEIC 720 挑戰 950：6,000+ 題大型題庫、自適應診斷、訓練/模考雙模式、防重複抽題、錯題本、進度追蹤與訪客備份。公開使用、免登入。" />
-<link rel="stylesheet" href="styles.css">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>TOEIC 950 Mission Control v1.5.0</title>
+<meta name="description" content="TOEIC 720 挑戰 950：7,710 題大型題庫、自適應診斷、訓練/模考雙模式、Similarity Shield 防重複抽題、錯題本、進度追蹤與訪客備份。公開使用、免登入。" />
+<link rel="stylesheet" href="styles.css?v=v1.5.0">
 </head>
 <body>
 <div class="app">
 <aside class="side">
-  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.3.0 · Massive Bank</span></div></div>
+  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.5.0 · Similarity Shield</span></div></div>
   <nav>
     <button class="active" data-go="home">🏠 今日任務</button>
     <button data-go="diagnostic">🎯 弱點診斷</button>
@@ -21,14 +24,14 @@
     <button data-go="progress">📈 進度追蹤</button>
     <button data-go="backup">💾 訪客 / 備份</button>
   </nav>
-  <div class="side-card"><b>6,000+ 題＋防重複</b><p>優先避開近期做過的題目與相同句型家族；仍維持訪客模式、免登入與本機備份。</p></div>
+  <div class="side-card"><b>7,710 題＋Similarity Shield</b><p>依語法骨架、近期題目、答案組合與情境相似度避重複；維持訪客模式、免登入與本機備份。</p></div>
 </aside>
 <main>
   <header class="top"><div><h1 id="topTitle">Good afternoon.</h1><p>今天不是「學英文」，而是在縮短 720 → 950 的分數差距。</p></div><div class="badge"><strong id="streak">0 天</strong><small>連續訓練</small></div></header>
 
   <section class="section active" id="home">
     <div class="hero">
-      <div><h2>TOEIC 950<br/>Project</h2><p>從 720 往 950 前進，把訓練聚焦在考點辨識、速度、精準度與錯題消滅。<b>6,292 題大型題庫＋防重複冷卻</b>，並維持訪客模式、免登入與可攜式備份。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button><button class="btn btn-soft" onclick="go('backup')">備份學習進度</button></div></div>
+      <div><h2>TOEIC 950<br/>Project</h2><p>從 720 往 950 前進，把訓練聚焦在考點辨識、速度、精準度與錯題消滅。<b>7,710 題大型題庫＋Similarity Shield</b>，並維持訪客模式、免登入與可攜式備份。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button><button class="btn btn-soft" onclick="go('backup')">備份學習進度</button></div></div>
       <div class="hero-stats"><div class="hero-stat"><strong id="heroCurrent">720</strong><small>目前分數</small></div><div class="hero-stat"><strong>950</strong><small>目標分數</small></div><div class="hero-stat"><strong id="gapScore">230</strong><small>尚需提升</small></div></div>
     </div>
 
@@ -58,7 +61,7 @@
   </section>
 
   <section class="section" id="practice">
-    <div class="title-row"><h2>⚡ 950 Training Engine</h2><span>6,000+ 題＋訓練 / 模考＋防重複冷卻</span></div>
+    <div class="title-row"><h2>⚡ 950 Training Engine</h2><span>7,710 題＋Similarity Shield＋訓練 / 模考</span></div>
     <div class="exam-toolbar">
       <div class="panel">
         <div class="practice-controls">
@@ -68,7 +71,7 @@
           <div class="field"><label>題數</label><select id="practiceCount"><option>5</option><option selected>10</option><option>20</option><option>30</option></select></div>
           <button class="btn btn-primary" onclick="startPractice()">開始訓練</button><button class="btn btn-soft" onclick="resetPractice()">重置</button>
         </div>
-        <div class="kbd-hint"><span class="kbd">A–D</span> 作答　<span class="kbd">Enter</span> 下一題　<span class="kbd">Space</span> 播放 Listening　·　近期做過的題與相同句型家族會優先避開</div>
+        <div class="kbd-hint"><span class="kbd">A–D</span> 作答　<span class="kbd">Enter</span> 下一題　<span class="kbd">Space</span> 播放 Listening　·　Similarity Shield 會依語法骨架與近期情境避重複</div>
       </div>
       <div class="panel"><div class="metrics-compact"><div class="metric"><strong id="pracScore">0 / 0</strong><small>答對</small></div><div class="metric"><strong id="pracAcc">—</strong><small>正確率</small></div><div class="metric"><strong class="timer" id="pracTimer">00:00</strong><small>本輪時間</small></div></div><p id="pracMessage">訓練模式立即解析；模考模式完成整輪後才公布答案。</p></div>
     </div>
@@ -124,22 +127,22 @@
 </main>
 </div>
 
-<script src="data-core.js"></script>
-<script src="data-listening.js"></script>
-<script src="data-part5.js"></script>
-<script src="data-part6.js"></script>
-<script src="data-part7.js"></script>
-<script src="data-expansion-core.js"></script>
-<script src="data-expansion-listening.js"></script>
-<script src="data-expansion-part5.js"></script>
-<script src="data-expansion-reading.js"></script>
-<script src="data.js"></script>
-<script src="app-core.js"></script>
-<script src="app-diagnostic.js"></script>
-<script src="app-practice.js"></script>
-<script src="app-repeat-control.js"></script>
-<script src="app-learning.js"></script>
-<script src="app-backup.js"></script>
-<script src="app.js"></script>
+<script src="data-core.js?v=v1.5.0"></script>
+<script src="data-listening.js?v=v1.5.0"></script>
+<script src="data-part5.js?v=v1.5.0"></script>
+<script src="data-part6.js?v=v1.5.0"></script>
+<script src="data-part7.js?v=v1.5.0"></script>
+<script src="data-expansion-core.js?v=v1.5.0"></script>
+<script src="data-expansion-listening.js?v=v1.5.0"></script>
+<script src="data-expansion-part5.js?v=v1.5.0"></script>
+<script src="data-expansion-reading.js?v=v1.5.0"></script>
+<script src="data.js?v=v1.5.0"></script>
+<script src="app-core.js?v=v1.5.0"></script>
+<script src="app-diagnostic.js?v=v1.5.0"></script>
+<script src="app-practice.js?v=v1.5.0"></script>
+<script src="app-repeat-control.js?v=v1.5.0"></script>
+<script src="app-learning.js?v=v1.5.0"></script>
+<script src="app-backup.js?v=v1.5.0"></script>
+<script src="app.js?v=v1.5.0"></script>
 </body>
 </html>
