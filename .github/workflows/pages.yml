@@ -34,6 +34,19 @@ jobs:
         run: node tests/repeat-smoke.js
       - name: Five-round human repetition audit
         run: node tests/human-repeat-audit.js
+      - name: Verify current public Pages is v1.5.0
+        shell: bash
+        run: |
+          url="https://stn011391.github.io/Toeic950/?verify=${{ github.sha }}"
+          for attempt in {1..12}; do
+            if curl -fsSL "$url" | grep -Fq 'v1.5.0 · Similarity Shield'; then
+              echo 'PASS public site is v1.5.0 · Similarity Shield'
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'FAIL public site still does not expose v1.5.0 · Similarity Shield'
+          exit 1
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
