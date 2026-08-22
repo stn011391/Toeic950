@@ -53,3 +53,16 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify deployed v1.5.0
+        shell: bash
+        run: |
+          url="${{ steps.deployment.outputs.page_url }}?verify=${{ github.sha }}"
+          for attempt in {1..12}; do
+            if curl -fsSL "$url" | grep -Fq 'v1.5.0 · Similarity Shield'; then
+              echo 'PASS live Pages: v1.5.0 · Similarity Shield'
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'FAIL live Pages did not expose v1.5.0 · Similarity Shield'
+          exit 1
