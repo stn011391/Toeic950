@@ -4,8 +4,14 @@ const RECENT_QUESTION_KEY='toeic950RecentQuestionsV4';
 const STRUCTURE_KEEP=new Set(('the a an this that these those i you he she it we they me him her us them my your his its our their who whom whose what which where when why how do does did have has had can could will would shall should may might must is are was were be been being to of in on at by for from with about into over after before between under during through despite although though because if unless until while once since as than and or but so not only no nor either neither whether rather provided given amid irrespective according per via each every all any some much many more most less least few several both another other same own such enough too very still already yet then now here there up down out off again just even also else ever never around across against toward towards upon within without among beside near past due lest wherever whenever however whoever whatever').split(/\s+/));
 const CONTEXT_FIELDS=['dept','person','item','doc','place','task','issue','recipient','service','system','event','location','customer','supplier','alt'];
 function loadRepeatState(){
-  try{const x=JSON.parse(localStorage.getItem(RECENT_QUESTION_KEY)||'null');if(x&&Array.isArray(x.ids)&&Array.isArray(x.families)&&Array.isArray(x.groups)&&Array.isArray(x.structures)&&Array.isArray(x.options)&&Array.isArray(x.contexts))return x}catch(e){}
-  return{ids:[],families:[],groups:[],structures:[],options:[],contexts:[]};
+  try{
+    const x=JSON.parse(localStorage.getItem(RECENT_QUESTION_KEY)||'null');
+    if(x&&Array.isArray(x.ids)&&Array.isArray(x.families)&&Array.isArray(x.groups)&&Array.isArray(x.structures)&&Array.isArray(x.options)&&Array.isArray(x.contexts)){
+      if(!Array.isArray(x.lastGroups))x.lastGroups=[];
+      return x;
+    }
+  }catch(e){}
+  return{ids:[],families:[],groups:[],structures:[],options:[],contexts:[],lastGroups:[]};
 }
 let repeatState=loadRepeatState();
 function saveRepeatState(){try{localStorage.setItem(RECENT_QUESTION_KEY,JSON.stringify(repeatState))}catch(e){}}
@@ -37,8 +43,17 @@ function structureSimilarity(a,b){
   const A=a.split(/\s+/),B=b.split(/\s+/),ga=new Set(),gb=new Set();for(let i=0;i<A.length-1;i++)ga.add(A[i]+' '+A[i+1]);for(let i=0;i<B.length-1;i++)gb.add(B[i]+' '+B[i+1]);if(!ga.size||!gb.size)return 0;let inter=0;for(const x of ga)if(gb.has(x))inter++;return inter/(ga.size+gb.size-inter||1);
 }
 function pushUniqueRecent(arr,value,max){if(!value)return;const i=arr.indexOf(value);if(i>=0)arr.splice(i,1);arr.push(value);if(arr.length>max)arr.splice(0,arr.length-max)}
-function rememberQuestionExposure(list){for(const q of list){if(!q?.id)continue;pushUniqueRecent(repeatState.ids,q.id,2600);pushUniqueRecent(repeatState.families,familyOf(q),1000);pushUniqueRecent(repeatState.groups,groupKeyOf(q),1400);pushUniqueRecent(repeatState.structures,structureOf(q),900);pushUniqueRecent(repeatState.options,optionSignature(q),500);pushUniqueRecent(repeatState.contexts,contextOf(q),180)}saveRepeatState()}
-function clearQuestionCooldown(){repeatState={ids:[],families:[],groups:[],structures:[],options:[],contexts:[]};saveRepeatState()}
+function rememberQuestionExposure(list){
+  const thisGroups=[];
+  for(const q of list){
+    if(!q?.id)continue;
+    const g=groupKeyOf(q);if(!thisGroups.includes(g))thisGroups.push(g);
+    pushUniqueRecent(repeatState.ids,q.id,2600);pushUniqueRecent(repeatState.families,familyOf(q),1000);pushUniqueRecent(repeatState.groups,g,1400);pushUniqueRecent(repeatState.structures,structureOf(q),900);pushUniqueRecent(repeatState.options,optionSignature(q),500);pushUniqueRecent(repeatState.contexts,contextOf(q),180)
+  }
+  repeatState.lastGroups=thisGroups;
+  saveRepeatState();
+}
+function clearQuestionCooldown(){repeatState={ids:[],families:[],groups:[],structures:[],options:[],contexts:[],lastGroups:[]};saveRepeatState()}
 function difficultyQuestions(part,level){const all=QUESTIONS[part]||[];if(level===720)return all.filter(q=>q.difficulty<=800);if(level===800)return all.filter(q=>q.difficulty>=800&&q.difficulty<=900);if(level===900)return all.filter(q=>q.difficulty>=900);return all.filter(q=>q.difficulty>=950)}
 function fallbackQuestions(part,level){const all=QUESTIONS[part]||[];if(level===950)return all.filter(q=>q.difficulty>=900);if(level===900)return all.filter(q=>q.difficulty>=800);return all}
 function unitize(part,questions){
@@ -54,12 +69,14 @@ function maxSimilarity(sig,list){let m=0;for(const x of list){const v=structureS
 function structureThreshold(part,recent=false){if(part===2||part===5)return recent?.84:.78;return recent?.93:.88}
 function selectUnits(part,units,need,stage,existing=[]){
   const chosen=[...existing],chosenKeys=new Set(chosen.map(u=>u.key)),chosenFamilies=new Set(chosen.map(u=>u.family)),chosenStructures=chosen.map(u=>u.structure),chosenOptions=new Set(chosen.map(u=>u.option).filter(Boolean)),skillCounts=new Map(),contextCounts=new Map();chosen.forEach(u=>{skillCounts.set(u.skill,(skillCounts.get(u.skill)||0)+1);if(u.context)contextCounts.set(u.context,(contextCounts.get(u.context)||0)+1)});
-  const recentGroups=new Set(repeatState.groups),recentFamilies=new Set(repeatState.families),recentStructures=repeatState.structures.filter(s=>s.startsWith(`P${part}|`)).slice(-120),recentOptions=new Set(repeatState.options.slice(-80));
+  const recentGroups=new Set(repeatState.groups),immediateGroups=new Set(repeatState.lastGroups||[]),recentFamilies=new Set(repeatState.families),recentStructures=repeatState.structures.filter(s=>s.startsWith(`P${part}|`)).slice(-120),recentOptions=new Set(repeatState.options.slice(-80));
+  const grouped=part===3||part===4||part===6||part===7;
   const candidates=shuffle(units);
   while(chosen.length<need){
     let best=null,bestScore=-1e9;
     for(const u of candidates){
       if(chosenKeys.has(u.key)||chosenFamilies.has(u.family))continue;
+      if(grouped&&immediateGroups.has(u.key))continue;
       if(stage.recent&&recentFamilies.has(u.family))continue;if(stage.recent&&recentGroups.has(u.key))continue;if(stage.recent&&recentStructures.includes(u.structure))continue;if(stage.option&&u.option&&recentOptions.has(u.option))continue;
       const sameSim=maxSimilarity(u.structure,chosenStructures);if(stage.similar&&sameSim>=structureThreshold(part,false))continue;const recentSim=stage.recentSimilar?maxSimilarity(u.structure,recentStructures):0;if(stage.recentSimilar&&recentSim>=structureThreshold(part,true))continue;
       const skillCount=skillCounts.get(u.skill)||0;if(stage.skillCap&&skillCount>=2)continue;const contextCount=u.context?(contextCounts.get(u.context)||0):0;if(stage.contextCap&&contextCount>=2)continue;if(stage.option&&u.option&&chosenOptions.has(u.option))continue;
