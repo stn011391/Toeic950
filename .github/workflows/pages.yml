@@ -36,9 +36,7 @@ jobs:
         run: node tests/human-repeat-audit.js
 
   deploy:
-    if: >-
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/'))
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: validate
     environment:
       name: github-pages
