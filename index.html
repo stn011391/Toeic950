@@ -6,14 +6,14 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>TOEIC 950 Mission Control v1.5.0</title>
-<meta name="description" content="TOEIC 720 挑戰 950：7,710 題大型題庫、自適應診斷、訓練/模考雙模式、Similarity Shield 防重複抽題、錯題本、進度追蹤與訪客備份。公開使用、免登入。" />
-<link rel="stylesheet" href="styles.css?v=v1.5.0">
+<title>TOEIC 950 Mission Control v1.6.0</title>
+<meta name="description" content="TOEIC 720 挑戰 950：v1.6.0 Dynamic Generator 每次訓練與弱點診斷即時生成新題，並保留 7,710 題舊題庫作備援。公開使用、免登入。" />
+<link rel="stylesheet" href="styles.css?v=v1.6.0">
 </head>
 <body>
 <div class="app">
 <aside class="side">
-  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.5.0 · Similarity Shield</span></div></div>
+  <div class="brand"><div class="mark">950</div><div><b>TOEIC Mission Control</b><small>720 → 950</small><span class="version-badge">v1.6.0 · Dynamic Generator</span></div></div>
   <nav>
     <button class="active" data-go="home">🏠 今日任務</button>
     <button data-go="diagnostic">🎯 弱點診斷</button>
@@ -24,14 +24,14 @@
     <button data-go="progress">📈 進度追蹤</button>
     <button data-go="backup">💾 訪客 / 備份</button>
   </nav>
-  <div class="side-card"><b>7,710 題＋Similarity Shield</b><p>依語法骨架、近期題目、答案組合與情境相似度避重複；維持訪客模式、免登入與本機備份。</p></div>
+  <div class="side-card"><b>Dynamic Generator</b><p>每次開始訓練或重新診斷時現場生成新題；近期完全相同題目會由生成指紋擋掉。</p></div>
 </aside>
 <main>
   <header class="top"><div><h1 id="topTitle">Good afternoon.</h1><p>今天不是「學英文」，而是在縮短 720 → 950 的分數差距。</p></div><div class="badge"><strong id="streak">0 天</strong><small>連續訓練</small></div></header>
 
   <section class="section active" id="home">
     <div class="hero">
-      <div><h2>TOEIC 950<br/>Project</h2><p>從 720 往 950 前進，把訓練聚焦在考點辨識、速度、精準度與錯題消滅。<b>7,710 題大型題庫＋Similarity Shield</b>，並維持訪客模式、免登入與可攜式備份。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button><button class="btn btn-soft" onclick="go('backup')">備份學習進度</button></div></div>
+      <div><h2>TOEIC 950<br/>Project</h2><p>從 720 往 950 前進。<b>Dynamic Generator</b> 會依 Part、難度、文法目標與商務情境即時生成題目；原本 7,710 題保留作備援。</p><div class="actions"><button class="btn btn-light" onclick="go('practice')">開始今日訓練</button><button class="btn btn-soft" onclick="go('diagnostic')">先做弱點診斷</button><button class="btn btn-soft" onclick="go('backup')">備份學習進度</button></div></div>
       <div class="hero-stats"><div class="hero-stat"><strong id="heroCurrent">720</strong><small>目前分數</small></div><div class="hero-stat"><strong>950</strong><small>目標分數</small></div><div class="hero-stat"><strong id="gapScore">230</strong><small>尚需提升</small></div></div>
     </div>
 
@@ -47,10 +47,10 @@
   </section>
 
   <section class="section" id="diagnostic">
-    <div class="title-row"><h2>🎯 弱點診斷 2.0</h2><span>36 題分層診斷，不硬判弱點</span></div>
+    <div class="title-row"><h2>🎯 弱點診斷 2.0</h2><span>36 題分層診斷 · 每次重新診斷都生成新題</span></div>
     <div class="exam-toolbar">
-      <div class="panel"><div class="compact-actions"><div class="metric"><strong id="diagDone">0 / 36</strong><small>已完成</small></div><div class="metric"><strong id="diagAcc">—</strong><small>正確率</small></div><button class="btn btn-primary" onclick="startDiagnostic()">開始 / 繼續診斷</button><button class="btn btn-soft" onclick="resetDiag()">重新診斷</button></div><div class="divider"></div><p id="diagAdvice">每個 Part 至少取 6 題；如果沒有明顯弱項，系統會直接告訴你「目前無明顯弱點」。</p></div>
-      <div class="panel"><h3>診斷規則</h3><div id="diagBreakdown" class="weak-table"></div><p class="hint">診斷只涵蓋 Part 2–7；Part 1 會在後續影像題庫版本加入。</p></div>
+      <div class="panel"><div class="compact-actions"><div class="metric"><strong id="diagDone">0 / 36</strong><small>已完成</small></div><div class="metric"><strong id="diagAcc">—</strong><small>正確率</small></div><button class="btn btn-primary" onclick="startDiagnostic()">開始 / 繼續診斷</button><button class="btn btn-soft" onclick="resetDiag()">重新診斷</button></div><div class="divider"></div><p id="diagAdvice">每個 Part 生成 6 題；重新診斷會建立另一套新題。</p></div>
+      <div class="panel"><h3>診斷規則</h3><div id="diagBreakdown" class="weak-table"></div><p class="hint">診斷涵蓋 Part 2–7；Part 1 仍待影像題型加入。</p></div>
     </div>
     <div class="panel qbox hidden" id="diagBox" style="margin-top:12px"></div>
   </section>
@@ -61,7 +61,7 @@
   </section>
 
   <section class="section" id="practice">
-    <div class="title-row"><h2>⚡ 950 Training Engine</h2><span>7,710 題＋Similarity Shield＋訓練 / 模考</span></div>
+    <div class="title-row"><h2>⚡ 950 Training Engine</h2><span>即時生成新題＋訓練 / 模考＋近期生成指紋防重複</span></div>
     <div class="exam-toolbar">
       <div class="panel">
         <div class="practice-controls">
@@ -69,11 +69,11 @@
           <div class="field"><label>難度</label><select id="practiceDifficulty" onchange="resetPractice()"><option value="adaptive">自適應</option><option value="720">720–800</option><option value="800">800–900</option><option value="900">900+</option><option value="950">950 挑戰</option></select></div>
           <div class="field"><label>Part</label><select id="practicePart" onchange="resetPractice()"><option value="5">Part 5 文法/單字</option><option value="6">Part 6 篇章填空</option><option value="7">Part 7 閱讀</option><option value="2">Part 2 應答</option><option value="3">Part 3 對話</option><option value="4">Part 4 短講</option></select></div>
           <div class="field"><label>題數</label><select id="practiceCount"><option>5</option><option selected>10</option><option>20</option><option>30</option></select></div>
-          <button class="btn btn-primary" onclick="startPractice()">開始訓練</button><button class="btn btn-soft" onclick="resetPractice()">重置</button>
+          <button class="btn btn-primary" onclick="startPractice()">生成本輪新題</button><button class="btn btn-soft" onclick="resetPractice()">重置</button>
         </div>
-        <div class="kbd-hint"><span class="kbd">A–D</span> 作答　<span class="kbd">Enter</span> 下一題　<span class="kbd">Space</span> 播放 Listening　·　Similarity Shield 會依語法骨架與近期情境避重複</div>
+        <div class="kbd-hint"><span class="kbd">A–D</span> 作答　<span class="kbd">Enter</span> 下一題　<span class="kbd">Space</span> 播放 Listening　·　每一輪由 Dynamic Generator 現場組題</div>
       </div>
-      <div class="panel"><div class="metrics-compact"><div class="metric"><strong id="pracScore">0 / 0</strong><small>答對</small></div><div class="metric"><strong id="pracAcc">—</strong><small>正確率</small></div><div class="metric"><strong class="timer" id="pracTimer">00:00</strong><small>本輪時間</small></div></div><p id="pracMessage">訓練模式立即解析；模考模式完成整輪後才公布答案。</p></div>
+      <div class="panel"><div class="metrics-compact"><div class="metric"><strong id="pracScore">0 / 0</strong><small>答對</small></div><div class="metric"><strong id="pracAcc">—</strong><small>正確率</small></div><div class="metric"><strong class="timer" id="pracTimer">00:00</strong><small>本輪時間</small></div></div><p id="pracMessage">每次開始訓練都會先生成新的測驗內容。</p></div>
     </div>
     <div class="panel qbox hidden" id="practiceBox" style="margin-top:10px"></div>
   </section>
@@ -127,22 +127,22 @@
 </main>
 </div>
 
-<script src="data-core.js?v=v1.5.0"></script>
-<script src="data-listening.js?v=v1.5.0"></script>
-<script src="data-part5.js?v=v1.5.0"></script>
-<script src="data-part6.js?v=v1.5.0"></script>
-<script src="data-part7.js?v=v1.5.0"></script>
-<script src="data-expansion-core.js?v=v1.5.0"></script>
-<script src="data-expansion-listening.js?v=v1.5.0"></script>
-<script src="data-expansion-part5.js?v=v1.5.0"></script>
-<script src="data-expansion-reading.js?v=v1.5.0"></script>
-<script src="data.js?v=v1.5.0"></script>
-<script src="app-core.js?v=v1.5.0"></script>
-<script src="app-diagnostic.js?v=v1.5.0"></script>
-<script src="app-practice.js?v=v1.5.0"></script>
-<script src="app-repeat-control.js?v=v1.5.0"></script>
-<script src="app-learning.js?v=v1.5.0"></script>
-<script src="app-backup.js?v=v1.5.0"></script>
-<script src="app.js?v=v1.5.0"></script>
+<script src="data-core.js?v=v1.6.0"></script>
+<script src="data-listening.js?v=v1.6.0"></script>
+<script src="data-part5.js?v=v1.6.0"></script>
+<script src="data-part6.js?v=v1.6.0"></script>
+<script src="data-part7.js?v=v1.6.0"></script>
+<script src="data-expansion-core.js?v=v1.6.0"></script>
+<script src="data-expansion-listening.js?v=v1.6.0"></script>
+<script src="data-expansion-part5.js?v=v1.6.0"></script>
+<script src="data-expansion-reading.js?v=v1.6.0"></script>
+<script src="data.js?v=v1.6.0"></script>
+<script src="app-core.js?v=v1.6.0"></script>
+<script src="app-diagnostic.js?v=v1.6.0"></script>
+<script src="app-practice.js?v=v1.6.0"></script>
+<script src="app-repeat-control.js?v=v1.6.0"></script>
+<script src="app-learning.js?v=v1.6.0"></script>
+<script src="app-backup.js?v=v1.6.0"></script>
+<script src="app.js?v=v1.6.0"></script>
 </body>
 </html>
